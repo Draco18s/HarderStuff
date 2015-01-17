@@ -1,0 +1,16 @@
+[
+{
+  "modid": "HarderLib",
+  "name": "HardLib",
+  "description": "Core library",
+  "version": "1.1.0",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Draco18s"],
+  "credits": "Keybounce",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -1,0 +1,8 @@
+adj.unstable=Unstable
+adj.broken=Broken
+adj.fractured=Fractured
+adj.cobble=Cobble
+tile.ThinVolatileGas.name=Thin Volatile Gas
+tile.VolatileGas.name=Thick Volatile Gas
+tile.VolcanicGas.name=Smoke
+tile.RockDust.name=Rock Dust

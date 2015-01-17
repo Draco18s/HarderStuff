@@ -1,0 +1,64 @@
+tile.ore_limonite.name=Limonite
+tile.ore_iron.name=Hard Iron Ore
+tile.ore_gold.name=Hard Gold Ore
+tile.ore_diamond.name=Hard Diamond Ore
+tile.ore_redstone.name=Hard Redstone Ore
+tile.ore_tin.name=Hard Tin Ore
+tile.ore_copper.name=Hard Copper Ore
+tile.ore_lead.name=Hard Lead Ore
+tile.ore_uranium.name=Hard Uranium Ore
+
+tile.axel.name=Axel
+tile.wind_vane.name=Wind Vane
+tile.sluice.name=Sluice
+tile.sifter.name=Sifter
+tile.millstone.name=Millstone
+
+item.limonite_ore.name=Raw Limonite Ore
+item.iron_ore.name=Raw Iron Ore
+item.gold_ore.name=Raw Gold Ore
+item.diamond_ore.name=Uncut Diamond
+item.tin_ore.name=Raw Tin Ore
+item.copper_ore.name=Raw Copper Ore
+item.lead_ore.name=Raw Lead Ore
+item.uranium_ore.name=Raw Uranium Ore
+
+item.iron_nugget.name=Iron Nugget
+
+item.small_crush_iron.name=Tiny Crushed Iron
+item.small_crush_gold.name=Tiny Crushed Gold
+item.small_crush_tin.name=Tiny Crushed Tin
+item.small_crush_copper.name=Tiny Crushed Copper
+item.small_crush_lead.name=Tiny Crushed Lead
+item.small_crush_uranium.name=Tiny Crushed Uranium
+
+item.small_iron_dust.name=Tiny Iron Dust
+item.small_gold_dust.name=Tiny Gold Dust
+item.small_flour_dust.name=Tiny Flour Pile
+item.small_sugar_dust.name=Tiny Sugar Pile
+item.large_iron_dust.name=Iron Dust
+item.large_gold_dust.name=Gold Dust
+item.flour_dust.name=Flour
+
+item.poorjoe.name=Poorjoe
+item.horsetail.name=Horsetail
+item.vallozia.name=Vallozia
+item.flame_lily.name=Flame Lily
+item.tansy.name=Tansy
+item.hauman.name=Hauman
+item.leadplant.name=Leadplant
+item.primrose.name=Evening Primrose
+
+indicator.iron=Iron Indicator
+indicator.gold=Gold Indicator
+indicator.diamond=Diamond Indicator
+indicator.redstone=Redstone Indicator
+indicator.tin=Tin Indicator
+indicator.copper=Copper Indicator
+indicator.lead=Lead Indicator
+indicator.uranium=Uranium Indicator
+
+item.diamond_stud_pickaxe.name=Diamon Tipped Pickaxe
+item.diamond_stud_axe.name=Diamond Tipped Axe
+item.diamond_stud_hoe.name=Diamond Tipped Hoe
+item.diamond_stud_shovel.name=Diamond Tipped Shovel

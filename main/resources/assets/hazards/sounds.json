@@ -1,0 +1,10 @@
+{
+  "random.rock": {
+    "category": "block",
+    "replace": true,
+    "sounds": [
+        "rock1",
+        "rock2"
+    ]
+  }
+}
