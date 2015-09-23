@@ -9,8 +9,8 @@ public class CropWeatherOffsets {
 	/**
 	 * @param tf Temperature offset.  Positive is "cold native" negative is "warm native."
 	 * @param rf Rain offset.  Positive is "dry native" negative is "wet native."
-	 * @param to Temp season offset in ticks.
-	 * @param ro Rain sesaon offset in ticks.
+	 * @param to Temp season offset in ticks.  Typically fractions of a year-length.
+	 * @param ro Rain sesaon offset in ticks.  Typically fractions of a year-length.
 	 */
 	public CropWeatherOffsets(float tf, float rf, int to, int ro) {
 		tempFlat = tf;
