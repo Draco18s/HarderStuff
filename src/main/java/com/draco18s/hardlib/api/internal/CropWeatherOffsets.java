@@ -19,6 +19,17 @@ public class CropWeatherOffsets {
 		rainTimeOffset = ro;
 	}
 	
+	/**
+	 * Constructor that creates a duplicate with the same values.
+	 * @param orig - the original top copy
+	 */
+	public CropWeatherOffsets(CropWeatherOffsets orig) {
+		tempFlat = orig.tempFlat;
+		rainFlat = orig.rainFlat;
+		tempTimeOffset = orig.tempTimeOffset;
+		rainTimeOffset = orig.rainTimeOffset;
+	}
+	
 	@Override
 	public String toString() {
 		return ((tempFlat >=0)?"+":"") + tempFlat + "," + ((rainFlat >=0)?"+":"") + rainFlat + "|" + tempTimeOffset + "," + rainTimeOffset;

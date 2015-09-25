@@ -8,4 +8,5 @@ public interface IHardCrops {
 	public void putCropWeather(Block b, CropWeatherOffsets off);
 	public boolean isCropBlock(Block block);
 	public CropWeatherOffsets getCropOffsets(Block block);
+	public long getYearLength();
 }
