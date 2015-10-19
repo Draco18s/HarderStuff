@@ -39,4 +39,18 @@ public interface IHardStones {
 	 * @return if the block is a registered unstable block
 	 */
 	public boolean isUnstableBlock(Block b);
+	
+	/**
+	 * Returns the block for the Hard Underground stone version of the supplied block (null if non-existent).
+	 * Metadata values of this block are:
+	 * <ol start="0"><li>Smooth stone</li>
+	 * <li>Fractured stone</li>
+	 * <li>Broken stone</li>
+	 * <li>Cobblestone</li>
+	 * <li value="7">Cobblestone (no rock dust when added to world)</li></ol>
+	 * @param orig
+	 * @param origMeta
+	 * @return
+	 */
+	public Block getReplacement(Block orig, int origMeta);
 }

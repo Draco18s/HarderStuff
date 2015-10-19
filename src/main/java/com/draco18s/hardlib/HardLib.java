@@ -43,5 +43,6 @@ public class HardLib {
 			//throw new IllegalStateException("HardLib requires COG version 1.2.14 (released Dec 5, 2014) or later.  Unfortunately COG does not a version number in its @mod declaration for a Forge initialization warning.", e);
 			proxy.throwException();
 		}
+		proxy.init();
 	}
 }
