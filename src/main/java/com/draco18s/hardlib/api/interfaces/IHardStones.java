@@ -1,5 +1,7 @@
 package com.draco18s.hardlib.api.interfaces;
 
+import com.draco18s.hardlib.api.internal.OreFlowerData;
+
 import net.minecraft.block.Block;
 import net.minecraft.util.StatCollector;
 
@@ -34,11 +36,19 @@ public interface IHardStones {
 	public Block addStoneType(Block orig, int origMeta, String name, String texName, int colorMult);
 	
 	/**
+	 * @deprecated use  {@link IHardStones#isUnstableBlock(Block, int)}
+	 * @param b Block to check
+	 * @return if the block is a registered unstable block
+	 */
+	@Deprecated
+	public boolean isUnstableBlock(Block b);
+	
+	/**
 	 * 
 	 * @param b Block to check
 	 * @return if the block is a registered unstable block
 	 */
-	public boolean isUnstableBlock(Block b);
+	public boolean isUnstableBlock(Block b, int meta);
 	
 	/**
 	 * Returns the block for the Hard Underground stone version of the supplied block (null if non-existent).

@@ -1,8 +1,11 @@
 package com.draco18s.hardlib.events;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
@@ -26,6 +29,16 @@ public class SpecialBlockEvent extends BlockEvent {
 	public static class BlockUpdateEvent extends SpecialBlockEvent {
 		public BlockUpdateEvent(World _w, int _x, int _y, int _z, int _m, Block _b, BiomeGenBase bio) {
 			super(_w, _x, _y, _z, _m, _b, bio);
+		}
+	}
+	
+	public static class ItemFrameComparatorPowerEvent extends EntityEvent {
+		public final ItemStack stack;
+		public int power;
+		public ItemFrameComparatorPowerEvent(Entity ent, ItemStack s, int p) {
+			super(ent);
+			stack = s;
+			power = p;
 		}
 	}
 }

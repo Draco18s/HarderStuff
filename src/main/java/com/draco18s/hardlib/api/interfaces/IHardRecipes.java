@@ -22,6 +22,8 @@ public interface IHardRecipes {
 	 */
 	public void addSiftRecipe(ItemStack input, ItemStack output, boolean registerOutput);
 	public void addSiftRecipe(ItemStack input, ItemStack output);
+	public void addSiftRecipe(String input, int stackSize, ItemStack output, boolean registerOutput);
+	public void addSiftRecipe(String input, int stackSize, ItemStack output);
 
 	/**
 	 * The millstone will grind "raw" materials down into "dust" materials, typically tiny dust piles.
