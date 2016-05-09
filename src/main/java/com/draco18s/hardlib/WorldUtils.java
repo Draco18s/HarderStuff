@@ -13,8 +13,8 @@ public class WorldUtils {
 		if (world == null) {
 			return false;
 		}
+		boolean isLoaded = false;
 		if (world instanceof WorldServer) {
-			boolean isLoaded = false;
 			if (((WorldServer)world).getChunkProvider() instanceof ChunkProviderServer) {
 				ChunkProviderServer chunkProviderServer = (ChunkProviderServer) ((WorldServer)world).getChunkProvider();
 				try {
@@ -31,10 +31,10 @@ public class WorldUtils {
 				isLoaded = ((WorldServer)world).getChunkProvider().chunkExists(x >> 4, z >> 4);
 			}
 			// skip unloaded chunks
-			if (!isLoaded) {
-				return false;
-			}
+			//if (!isLoaded) {
+			//	return false;
+			//}
 		}
-		return true;
+		return isLoaded;
 	}
 }

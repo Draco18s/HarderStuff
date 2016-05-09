@@ -38,12 +38,12 @@ public class OreCountGenerator {
 			if(ext == null) {
 				for(int b=0; b < blockList.size(); ++b) {
 					OreCounter c = blockList.get(b);
-					OreDataHooks.putOreData(world, chunkX, lastY+16, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+					OreDataHooks.putOreData(world, chunkX, lastY, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
 					c.cycleCounts();
-					OreDataHooks.putOreData(world, chunkX, lastY+24, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+					OreDataHooks.putOreData(world, chunkX, lastY + 8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
 					c.cycleCounts();
-					lastY+=16;
 				}
+				lastY+=16;
 				continue;
 			}
 			byte[] lsb = ext.getBlockLSBArray();

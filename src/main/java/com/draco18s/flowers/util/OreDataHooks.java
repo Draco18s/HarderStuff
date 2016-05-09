@@ -120,7 +120,7 @@ public class OreDataHooks {
     public static void readData(World world, int x, int z, NBTTagCompound nbt) {
     	if(nbt.hasKey("HardOreData")) {
     		NBTTagCompound honbt = nbt.getCompoundTag("HardOreData");
-    		for(int y=0; y < 256; y+=16) {
+    		for(int y=0; y < 256; y+=8) {
 	    		if(honbt.hasKey("slice_"+y)) {
 		    		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
     				HashMap<String,Integer> value = new HashMap<String,Integer>();
@@ -150,7 +150,7 @@ public class OreDataHooks {
     
     public static void saveData(World world, int x, int z, NBTTagCompound nbt) {
     	NBTTagCompound honbt = new NBTTagCompound();
-    	for(int y=0; y < 256; y+=16) {
+    	for(int y=0; y < 256; y+=8) {
 	    	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
 	    	HashMap<String,Integer> value = graphs.get(key);
 	    	if(value != null) {
@@ -170,6 +170,17 @@ public class OreDataHooks {
     	}
     	honbt.setInteger("version", VERSION);
     	nbt.setTag("HardOreData", honbt);
+    }
+    public static void clearData(World world, int x, int z) {
+    	
+    	//if(!WorldUtils.isChunkLoaded_noChunkLoading(world, x, z)) {
+    		//int size = graphs.size();
+    		for(int y=0; y < 256; y+=8) {
+    	    	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
+				graphs.remove(key);
+    		}
+			//OresBase.logger.log(Level.INFO, "Graphs was: " + size + ", now: " + graphs.size());
+    	//}
     }
 
 	/*public static void clearData(World world, int x, int z) {

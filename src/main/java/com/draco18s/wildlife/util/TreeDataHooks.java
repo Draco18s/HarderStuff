@@ -112,12 +112,12 @@ public class TreeDataHooks {
 			}
 			honbt.setInteger("numtrees", i);
 		}
-		if(!WorldUtils.isChunkLoaded_noChunkLoading(world, cx, cz)) {
+		//if(!WorldUtils.isChunkLoaded_noChunkLoading(world, cx, cz)) {
 			//System.out.println("Chunk " + key + " saved and unloaded from memory.");
 			//WildlifeBase.logger.log(Level.DEBUG, "Chunk " + key + " saved and unloaded from memory.");
 			//chunkList.remove(key);
-			treeList.remove(key);
-		}
+			//treeList.remove(key);
+		//}
 		if(treesToKill.size() > 0) {
 			//System.out.println("Saving remaining dead trees.");
 			int i = 0;
@@ -138,12 +138,13 @@ public class TreeDataHooks {
 		data.setTag("WildlifeTreeData", honbt);
 	}
 
-	/*public static void clearData(World world, int cx, int cz) {
+	public static void clearData(World world, int cx, int cz) {
 		//NBTTagCompound honbt = new NBTTagCompound();
 		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, cx,0,cz);
 		//WildlifeBase.logger.log(Level.DEBUG, "Marking chunk " + key + " as unloaded.");
-		chunkList.put(key, false);
-	}*/
+		//chunkList.put(key, false);
+		treeList.remove(key);
+	}
 
 	public static void addTree(World world, int x, int y, int z, int age) {
 		Chunk chunk = world.getChunkFromBlockCoords(x, z);

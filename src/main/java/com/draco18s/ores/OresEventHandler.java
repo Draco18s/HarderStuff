@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.logging.log4j.Level;
+
 import com.draco18s.hardlib.HashUtils;
+import com.draco18s.hardlib.WorldUtils;
 import com.draco18s.hardlib.api.HardLibAPI;
 import com.draco18s.hardlib.api.internal.BlockWrapper;
 import com.draco18s.hardlib.api.internal.ChunkCoordTriplet;
@@ -55,6 +58,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class OresEventHandler {
 	public static boolean poopBonemealFlowers = false;
@@ -314,9 +318,35 @@ public class OresEventHandler {
 			OreDataHooks.saveData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void chunkUnload(ChunkEvent.Unload event) {
-		if(!event.world.isRemote)
+		if(!event.world.isRemote) {
+			//OresBase.logger.log(Level.INFO, "Is chunk loaded: " + event.getChunk().isChunkLoaded);
 			OreDataHooks.clearData(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
+			//WorldUtils.isChunkLoaded_noChunkLoading(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
+			//OresBase.logger.log(Level.INFO, "Is chunk loaded: " + event.getChunk().isChunkLoaded);
+		}
+	}
+	
+	/*private int originalGraphsSize = -1;
+	private int removedGraphsSize = -1;
+	@SubscribeEvent
+	public void tickStart(TickEvent.WorldTickEvent event) {
+		if(event.phase == TickEvent.Phase.END) {
+			if(event.world.provider.dimensionId == 0) {
+				if(event.world.getWorldTime() % 12000 == 0) {
+					originalGraphsSize = OreDataHooks.getGraphSize();
+				}
+				if(event.world.getWorldTime() % 12000 == 1) {
+					removedGraphsSize = OreDataHooks.cleanup(event.world);
+				}
+				if(event.world.getWorldTime() % 12000 == 2) {
+					OresBase.logger.log(Level.INFO, "Graphs was: " + originalGraphsSize + ", now: " + OreDataHooks.getGraphSize() + ", down: " + removedGraphsSize);
+				}
+			}
+			else {
+				OreDataHooks.cleanup(event.world);
+			}
+		}
 	}*/
 }

@@ -297,4 +297,8 @@ public class EntityAIAging extends EntityAIBase {
 		}
 		return grassNear;
 	}
+	
+	public EntityAgeTracker getTracker() {
+		return age;
+	}
 }

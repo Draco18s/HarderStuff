@@ -260,8 +260,15 @@ public class HardLibPatcher implements IClassTransformer {
 	}
 	
 	private void patchEntityCow(ClassNode classNode) {
-		MethodNode method = ASMHelper.findMethod(classNode, "interact", BOOLEAN_TYPE, PLAYER_TYPE);
+		MethodNode method = ASMHelper.findMethod(classNode, "func_70085_c", BOOLEAN_TYPE, PLAYER_TYPE);
 		System.out.println("==Patching EntityCow==");
+		if(method == null) {
+			method = ASMHelper.findMethod(classNode, "interact", BOOLEAN_TYPE, PLAYER_TYPE);
+			if(method == null) {
+				System.out.println("Could not find method!");
+				return;
+			}
+		}
 		AbstractInsnNode absNode = findFirst(IFNE, method.instructions);
 		if(absNode != null) {
 			absNode = absNode.getNext().getNext();

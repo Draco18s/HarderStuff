@@ -7,6 +7,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import CustomOreGen.Util.CogOreGenEvent;
 
 import com.draco18s.hardlib.api.HardLibAPI;
@@ -65,5 +66,15 @@ public class OresEventHandler {
 	public void chunkSave(ChunkDataEvent.Save event) {
 		if(!event.world.isRemote)
 			OreDataHooks.saveData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
+	}
+	
+	@SubscribeEvent
+	public void chunkUnload(ChunkEvent.Unload event) {
+		if(!event.world.isRemote) {
+			//OresBase.logger.log(Level.INFO, "Is chunk loaded: " + event.getChunk().isChunkLoaded);
+			OreDataHooks.clearData(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
+			//WorldUtils.isChunkLoaded_noChunkLoading(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
+			//OresBase.logger.log(Level.INFO, "Is chunk loaded: " + event.getChunk().isChunkLoaded);
+		}
 	}
 }

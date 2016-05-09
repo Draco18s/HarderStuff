@@ -24,7 +24,6 @@ import com.draco18s.hardlib.events.EntityAnimalInteractEvent;
 import com.draco18s.hardlib.events.SpecialBlockEvent;
 import com.draco18s.hardlib.events.SpecialBlockEvent.BlockUpdateEvent;
 import com.draco18s.hardlib.events.SpecialBlockEvent.ItemFrameComparatorPowerEvent;
-import com.draco18s.wildlife.client.CowStatsClient;
 import com.draco18s.wildlife.entity.CowStats;
 import com.draco18s.wildlife.entity.EntityGoat;
 import com.draco18s.wildlife.entity.EntityLizard;
@@ -116,7 +115,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class WildlifeEventHandler {
 	//private ArrayList<EntityAnimal> toConstruct = new ArrayList<EntityAnimal>();
-	private HashMap<EntityAnimal, EntityAgeTracker> tracker = new HashMap<EntityAnimal, EntityAgeTracker>();
+	//private HashMap<EntityAnimal, EntityAgeTracker> tracker = new HashMap<EntityAnimal, EntityAgeTracker>();
 	//private ArrayList<Chunk> activeChunks = new ArrayList<Chunk>();
 	public static boolean doWeatherLogging;
 	public static boolean trackTrees;
@@ -241,7 +240,7 @@ public class WildlifeEventHandler {
 			EntityAnimal animal = (EntityAnimal)event.entity;
 			EntityAgeTracker t = new EntityAgeTracker();
 			animal.tasks.addTask(8, new EntityAIAging(new Random(), animal, event.entity.getClass(), t));
-			tracker.put(animal, t);
+			//tracker.put(animal, t);
 		}
 		if(event.entity instanceof EntityCow) {
 			((EntityCow)event.entity).tasks.addTask(0, new EntityAIMilking((EntityCow)event.entity));
@@ -299,7 +298,18 @@ public class WildlifeEventHandler {
 	}
 	
 	public EntityAgeTracker getTracker(EntityAnimal animal) {
-		return tracker.get(animal);
+		EntityAIAging agingTask = null;
+		for(Object obj : animal.tasks.taskEntries) {
+			EntityAITasks.EntityAITaskEntry task = (EntityAITasks.EntityAITaskEntry)obj;
+			if(task.action instanceof EntityAIAging) {
+				agingTask = (EntityAIAging) task.action;
+			}
+		}
+		if(agingTask != null) {
+			return agingTask.getTracker();
+		}
+		return null;
+		//return tracker.get(animal);
 	}
 	
 	@SubscribeEvent
@@ -640,13 +650,13 @@ public class WildlifeEventHandler {
 		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void chunkUnload(ChunkEvent.Unload event) {
 		if(!event.world.isRemote) {
-			System.out.println("Clear data ["+event.getChunk().xPosition+","+ event.getChunk().zPosition+"]");
+			//System.out.println("Clear data ["+event.getChunk().xPosition+","+ event.getChunk().zPosition+"]");
 			TreeDataHooks.clearData(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
 		}
-	}*/
+	}
 	
 	@SubscribeEvent
 	public void onSaplingItemDead(ItemExpireEvent event) {

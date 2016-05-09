@@ -108,6 +108,7 @@ public class BlockRottingWood extends BlockFalling {
 				if(player != null) {
 					player.addStat(StatsAchievements.growGrass, 1);
 				}
+				players.remove(cct);
 			}
 			else {
 				world.setBlockToAir(x, y, z);

@@ -1,5 +1,7 @@
 package com.draco18s.hardlib.api.internal;
 
+import org.apache.logging.log4j.Level;
+
 import com.draco18s.hardlib.HashUtils;
 
 public class ChunkCoordTriplet extends Object {

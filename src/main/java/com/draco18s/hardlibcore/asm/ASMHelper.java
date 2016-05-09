@@ -252,7 +252,10 @@ public class ASMHelper {
 				return node;
 			}
 			else if(node.name.equals(name)) {
-				System.out.println("Did you mean '" + node.desc + "' instead of '" + desc + "'?");
+				//System.out.println("Did you mean '" + node.desc + "' instead of '" + desc + "'?");
+			}
+			else if(node.desc.equals(desc)) {
+				//System.out.println("Did you mean '" + node.name + "' instead of '" + name + "'?");
 			}
 		}
 		return null;

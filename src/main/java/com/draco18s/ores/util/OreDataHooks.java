@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -131,7 +132,7 @@ public class OreDataHooks {
     public static void readData(World world, int x, int z, NBTTagCompound nbt) {
     	if(nbt.hasKey("HardOreData")) {
     		NBTTagCompound honbt = nbt.getCompoundTag("HardOreData");
-    		for(int y=0; y < 256; y+=16) {
+    		for(int y=0; y < 256; y+=8) {
 	    		if(honbt.hasKey("slice_"+y)) {
 		    		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
     				HashMap<String,Integer> value = new HashMap<String,Integer>();
@@ -161,7 +162,7 @@ public class OreDataHooks {
     
     public static void saveData(World world, int x, int z, NBTTagCompound nbt) {
     	NBTTagCompound honbt = new NBTTagCompound();
-    	for(int y=0; y < 256; y+=16) {
+    	for(int y=0; y < 256; y+=8) {
 	    	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
 	    	HashMap<String,Integer> value = graphs.get(key);
 	    	if(value != null) {
@@ -174,13 +175,26 @@ public class OreDataHooks {
 		    	}
 		    	honbt.setTag("slice_"+y, snbt);
 	    	}
-			if(!WorldUtils.isChunkLoaded_noChunkLoading(world, x, z)) {
+			/*if(!WorldUtils.isChunkLoaded_noChunkLoading(world, x, z)) {
 				//chunkList.remove(key);
 				graphs.remove(key);
-			}
+				OresBase.logger.log(Level.INFO, "Graphs remaining size: " + graphs.size());
+			}*/
     	}
     	honbt.setInteger("version", VERSION);
     	nbt.setTag("HardOreData", honbt);
+    }
+    
+    public static void clearData(World world, int x, int z) {
+    	
+    	//if(!WorldUtils.isChunkLoaded_noChunkLoading(world, x, z)) {
+    		//int size = graphs.size();
+    		for(int y=0; y < 256; y+=8) {
+    	    	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
+				graphs.remove(key);
+    		}
+			//OresBase.logger.log(Level.INFO, "Graphs was: " + size + ", now: " + graphs.size());
+    	//}
     }
 
 	/*public static void clearData(World world, int x, int z) {
@@ -191,4 +205,29 @@ public class OreDataHooks {
 			chunkList.put(key, false);
     	}
 	}*/
+
+	public static int cleanup(World world) {
+		int size = graphs.size();
+		Set<ChunkCoordTriplet> set = graphs.keySet();
+		ArrayList<ChunkCoordTriplet> toClear = new ArrayList<ChunkCoordTriplet>();
+		for(ChunkCoordTriplet cct : set) {
+			if(cct.dimID == world.provider.dimensionId) {
+				if(!WorldUtils.isChunkLoaded_noChunkLoading(world, cct.posX, cct.posZ)) {
+					toClear.add(cct);
+				}
+			}
+		}
+		if(toClear.size() > 0) {
+			OresBase.logger.log(Level.INFO, "Size: " + toClear.size());
+		}
+		for(ChunkCoordTriplet cct : toClear) {
+			//clearData(world, cct.posX, cct.posZ);
+			graphs.remove(cct);
+		}
+		return toClear.size();
+	}
+	
+	public static int getGraphSize() {
+		return graphs.size();
+	}
 }
