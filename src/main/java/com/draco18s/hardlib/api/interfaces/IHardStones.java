@@ -34,6 +34,7 @@ public interface IHardStones {
 	 * @return The new unstable stone block
 	 */
 	public Block addStoneType(Block orig, int origMeta, String name, String texName, int colorMult);
+	public Block addStoneType(Block orig, int origMeta, String name, String texName, int colorMult, boolean invertColor);
 	
 	/**
 	 * @deprecated use  {@link IHardStones#isUnstableBlock(Block, int)}
