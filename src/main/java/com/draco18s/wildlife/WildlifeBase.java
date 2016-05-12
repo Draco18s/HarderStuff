@@ -378,6 +378,9 @@ public class WildlifeBase {
 		if(Loader.isModLoaded("Forestry")) {
     		IntegrationForestry.registerForestryTrees();
     	}
+		if(Loader.isModLoaded("terrafirmacraft")) {
+    		IntegrationTFC.registerTFCTrees();
+    	}
 		if(Loader.isModLoaded("TwilightForest")) {
     		IntegrationTwilightForest.registerAnimals();
     	}

@@ -32,7 +32,7 @@ public class CowStats implements IExtendedEntityProperties {
 
 	@Override
 	public void init(Entity entity, World world) {
-    	milkLevel = 3000;
+    	milkLevel = 3000 + world.rand.nextInt(12000);
 	}
 
 	public static CowStats get(EntityCow entityLiving) {

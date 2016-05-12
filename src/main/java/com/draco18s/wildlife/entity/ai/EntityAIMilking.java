@@ -82,6 +82,7 @@ public class EntityAIMilking extends EntityAIBase {
 		
 		stats.milkLevel = Math.max(Math.min(stats.milkLevel, 3 * AnimalUtil.milkQuanta + 5000), 0);
 		if(stats.milkLevel % (600) == 0) {
+			//System.out.println("" + stats.milkLevel);
 			sendUpdatePacket(entity, stats);
 		}
 		//stats.milkLevel = foodLevel;
@@ -103,8 +104,8 @@ public class EntityAIMilking extends EntityAIBase {
 				return false;
 			}
 		}
-		//System.out.println("Milk available: " + stats.milkLevel + ", " + (stats.milkLevel > AnimalUtil.milkQuanta));
-		return stats.milkLevel > AnimalUtil.milkQuanta + 4000;
+		//System.out.println("Milk available: " + stats.milkLevel + ", " + (stats.milkLevel >= AnimalUtil.milkQuanta + 4000));
+		return stats.milkLevel >= AnimalUtil.milkQuanta + 4000;
 	}
 	
 	public void doMilking() {

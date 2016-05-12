@@ -49,6 +49,9 @@ public class EntityAIAging extends EntityAIBase {
 
 	@Override
 	public boolean shouldExecute() {
+		if(AnimalUtil.animalGlobalAgeRate == 0) {
+			return false;
+		}
 		if(entity instanceof EntityHorse) {
 			return !((EntityHorse)entity).isTame();
 		}

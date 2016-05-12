@@ -236,7 +236,7 @@ public class WildlifeEventHandler {
 	
 	@SubscribeEvent
 	public void onEntityAdded(EntityJoinWorldEvent event) {
-		if(AnimalUtil.animalGlobalAgeRate > 0 && event.entity instanceof EntityAnimal && !event.entity.worldObj.isRemote) {
+		if(event.entity instanceof EntityAnimal && !event.entity.worldObj.isRemote) {
 			EntityAnimal animal = (EntityAnimal)event.entity;
 			EntityAgeTracker t = new EntityAgeTracker();
 			animal.tasks.addTask(8, new EntityAIAging(new Random(), animal, event.entity.getClass(), t));
