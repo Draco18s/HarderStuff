@@ -15,13 +15,13 @@ import net.minecraft.block.Block;
 public class IntegrationTFC { 
 
   public static void registerTFCTrees() {{ 
-     Block b = GameRegistry.findBlock("terrafirmacraft", "ItemSapling"); 
+     Block b = GameRegistry.findBlock("terrafirmacraft", "sapling"); 
 
      if(b != null) { 
         HardLibAPI.plantManager.registerBlockType(b, BlockType.SAPLING); 
   
         for(int i = 1; i <= 8; i++) { 
-            b = GameRegistry.findBlock("terrafirmacraft", "BlockLogNatural"+i); 
+            b = GameRegistry.findBlock("terrafirmacraft", "log"+i); 
             WildlifeBase.treeCounter.addLogType(b); 
             //do these generate as trees? 
             /*b = Block.getBlockFromName("fireproofLog"+i); 
@@ -29,13 +29,13 @@ public class IntegrationTFC {
                                     } 
                     }
       }
-      {Block b = GameRegistry.findBlock("terrafirmacraft", "ItemSapling2"); 
+      {Block b = GameRegistry.findBlock("terrafirmacraft", "sapling2"); 
 
       if(b != null) { 
         HardLibAPI.plantManager.registerBlockType(b, BlockType.SAPLING); 
   
         for(int i = 1; i <= 8; i++) { 
-            b = GameRegistry.findBlock("terrafirmacraft", "BlockLogNatural2"+i); 
+            b = GameRegistry.findBlock("terrafirmacraft", "log2"+i); 
             WildlifeBase.treeCounter.addLogType(b); 
             //do these generate as trees? 
             /*b = Block.getBlockFromName("fireproofLog"+i); 
