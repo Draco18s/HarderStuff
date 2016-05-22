@@ -19,8 +19,15 @@ import com.draco18s.hardlib.api.internal.OreFlowerData;
 import com.draco18s.flowers.OreFlowersBase;
 
 public class OreCountGenerator {
+	private int lastChunkX;
+	private int lastChunkZ;
 
 	public void generate(Random random, int chunkX, int chunkZ, World world) {
+		if(lastChunkX == chunkX && lastChunkZ == chunkZ) {
+			return;
+		}
+		lastChunkX = chunkX;
+		lastChunkZ = chunkZ;
 		int s = HashUtils.hash((int)world.getSeed(), chunkX);
 		s = HashUtils.hash(s, 0);
 		s = HashUtils.hash(s, chunkZ);
@@ -132,7 +139,8 @@ public class OreCountGenerator {
 						for(int j=1; lastY+j < 250; j++) {
 							if(world.getSavedLightValue(EnumSkyBlock.Sky, chunkX*16, lastY+j+1, chunkZ*16) > 7) {
 								OreFlowersBase.scatterFlowers(world, chunkX*16, lastY+j+1, chunkZ*16, dat.flower, dat.metadata, 16, 6, 9);
-								return;
+								//return;
+								j = 999;
 							}
 						}
 					}

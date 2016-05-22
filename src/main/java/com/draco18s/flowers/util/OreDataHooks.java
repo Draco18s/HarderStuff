@@ -46,6 +46,7 @@ public class OreDataHooks {
 	//private static ConcurrentHashMap<ChunkCoordTriplet, Boolean> chunkList = new ConcurrentHashMap<ChunkCoordTriplet, Boolean>();
     
     public static void putOreData(World world, int x, int y, int z, BlockWrapper b, int count) {
+    	if(count == 0) return;
     	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId,x,y,z);
     	HashMap<String,Integer> value = graphs.get(key);
     	if(value == null) {
@@ -54,6 +55,13 @@ public class OreDataHooks {
     	}
     	//else {
     		//count = Math.min(value.get(b.getUnlocalizedName()), count);
+    		int c = 0;
+    		if(value.containsKey(b.block.getUnlocalizedName()+":"+b.meta)) {
+    			c = value.get(b.block.getUnlocalizedName()+":"+b.meta);
+    		}
+    		if(c > 0) {
+    			count += c;
+    		}
         	value.put(b.block.getUnlocalizedName()+":"+b.meta, count);
     	//}
     	graphs.put(key, value);
@@ -64,13 +72,14 @@ public class OreDataHooks {
     	//x = Math.round(x/16f);
     	x = c.xPosition;//x = x>>4
     	y -= (y%8);
+    	if(y < 0) return 0;
     	//z = Math.round(z/16f);
     	z = c.zPosition;//z = z>>4
     	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
 		HashMap<String,Integer> map = graphs.get(key);
 		//System.out.println(graphs);
 		//System.out.println(map);
-		//System.out.println("Looking:  " + key.toString() + "-> " + ((map==null)?"null":map.containsKey(b.b.getUnlocalizedName()+":"+b.m)));
+		//System.out.println("Looking:  " + key.toString() + "-> " + ((map==null)?"null":map.containsKey(b.block.getUnlocalizedName()+":"+b.meta)));
 		if(map == null || !map.containsKey(b.block.getUnlocalizedName()+":"+b.meta)) {
 			//return 0;
 			//OreFlowersBase.oreCounter.generate(null, x, z, world);
@@ -92,8 +101,8 @@ public class OreDataHooks {
 			map.put("fake_ore_count", 1);
 		}
 		map = graphs.get(key);
-		//System.out.println("    :" + map.get(b.getUnlocalizedName()));
-    	//System.out.println(b.getUnlocalizedName()+world.provider.dimensionId+","+x+","+y+","+z+"->"+map.get(b.getUnlocalizedName()));
+		//System.out.println("    :" + map.get(b.block.getUnlocalizedName()));
+    	//System.out.println(b.block.getUnlocalizedName()+world.provider.dimensionId+","+x+","+y+","+z+"->"+map.get(b.block.getUnlocalizedName()));
     	return map.get(b.block.getUnlocalizedName()+":"+b.meta);
     }
     
