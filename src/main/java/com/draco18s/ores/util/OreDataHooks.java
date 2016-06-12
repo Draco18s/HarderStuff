@@ -56,9 +56,9 @@ public class OreDataHooks {
     	//else {
     		//count = Math.min(value.get(b.getUnlocalizedName()), count);
         	value.put(b.block.getUnlocalizedName()+":"+b.meta, count);
-        	/*if(x == 5 && z == 13 && y < 90 && b.b.getUnlocalizedName().contains("redstone")) {
-        		System.out.println(y + "|" + b.b.getUnlocalizedName()+":"+b.m + "=" + count);
-        	}*/
+        	//if(x == 0 && z == 0 && y < 20) {
+        	//	System.out.println("Ore at: " + y + "|" + b.block.getUnlocalizedName()+":"+b.meta + " = " + count);
+        	//}
     	//}
     	graphs.put(key, value);
     }

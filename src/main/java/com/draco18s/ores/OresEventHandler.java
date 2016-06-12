@@ -144,7 +144,7 @@ public class OresEventHandler {
 						OreDataHooks.getOreData(event.world, event.x, event.y-8, event.z, b)+
 						OreDataHooks.getOreData(event.world, event.x, event.y-16, event.z, b)+
 						OreDataHooks.getOreData(event.world, event.x, event.y-24, event.z, b);
-				//System.out.println(b.block.getUnlocalizedName() + ": " + count);
+				//System.out.println("Found: " + b.block.getUnlocalizedName()+ ":" + b.meta + " = " + count);
 				if(b.block == OresBase.oreRedstone) { count *= 0.8f; }//change to 0.25? that would be a 20% reduction in flowers
 				//System.out.println("   : " + (count > 0));
 				if(count > 0) {
@@ -303,7 +303,13 @@ public class OresEventHandler {
 		Chunk c = event.world.getChunkFromBlockCoords(event.worldX, event.worldZ);
 		int cx = c.xPosition;
 		int cz = c.zPosition;
+		//if(cx == 0 && cz == 0) {
+		//	System.out.println("Pre Gen: " + event.world.getBlock(3,19,3).getUnlocalizedName());
+		//}
 		OresBase.oreCounter.generate(null, cx, cz, event.world);
+		//if(cx == 0 && cz == 0) {
+		//	System.out.println("Post Gen: " + event.world.getBlock(3,19,3).getUnlocalizedName());
+		//}
 	}
 	
 	@SubscribeEvent

@@ -29,4 +29,8 @@ public class HardLibAPI {
 	 * Harder Wildlife animal handling
 	 */
 	public static IAnimals animalManager = null;
+	/**
+	 * Harder Wildlife tree API
+	 */
+    public static ITreeTracker treeCounter;
 }

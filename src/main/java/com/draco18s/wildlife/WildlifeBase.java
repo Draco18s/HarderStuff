@@ -116,12 +116,27 @@ public class WildlifeBase {
     	HardLibAPI.animalManager.addHerbivore(EntityChicken.class);
     	HardLibAPI.animalManager.addHerbivore(EntityMooshroom.class);
     	
-    	HardLibAPI.plantManager.registerBlockType(Blocks.sapling, BlockType.SAPLING);
+    	/*HardLibAPI.plantManager.registerBlockType(Blocks.sapling, BlockType.SAPLING);
     	HardLibAPI.plantManager.registerBlockType(Blocks.cactus, BlockType.CACTUS);
     	HardLibAPI.plantManager.registerBlockType(Blocks.brown_mushroom, BlockType.MUSHROOM);
     	HardLibAPI.plantManager.registerBlockType(Blocks.red_mushroom, BlockType.MUSHROOM);
     	HardLibAPI.plantManager.registerBlockType(Blocks.nether_wart, BlockType.NETHERSTALK);
-    	HardLibAPI.plantManager.registerBlockType(Blocks.reeds, BlockType.REEDS);
+    	HardLibAPI.plantManager.registerBlockType(Blocks.reeds, BlockType.REEDS);*/
+    	
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.cactus,1,0), BlockType.CACTUS);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.brown_mushroom,1,0), BlockType.MUSHROOM);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.red_mushroom,1,0), BlockType.MUSHROOM);
+    	//HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.nether_wart,1,OreDictionary.WILDCARD_VALUE), BlockType.NETHERSTALK);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Items.nether_wart,1,0), BlockType.NETHERSTALK);
+    	//HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.reeds,1,OreDictionary.WILDCARD_VALUE), BlockType.REEDS);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Items.reeds,1,0), BlockType.REEDS);
+    	
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,0), BlockType.SAPLING);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,1), BlockType.SAPLING_SOMETIMES_2x2);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,2), BlockType.SAPLING);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,3), BlockType.SAPLING_SOMETIMES_2x2);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,4), BlockType.SAPLING);
+    	HardLibAPI.plantManager.registerBlockType(new ItemStack(Blocks.sapling,1,5), BlockType.SAPLING_ALLWAYS_2x2);
     	
     	WildlifeEventHandler.weekLength = 2*config.getInt("moonPhaseTime", "SEASONS", 2, 1, 32, "How many Minecraft-Days it takes the moon to change phase (\"1 week\").\n1 is vanilla, 1 or 2 is good for SSP, 8+ is good for SMP.  Effects year length.\n");
     	WildlifeEventHandler.doWeatherLogging = config.getBoolean("LogWeather", "SEASONS", false, "Enable to see baseline temp/rain modifiers in console.");
@@ -262,7 +277,7 @@ public class WildlifeBase {
     @EventHandler
     public void load(FMLInitializationEvent event) {
     	treeCounter = new TreeCountGenerator();
-		
+		HardLibAPI.treeCounter = treeCounter;
 		FMLInterModComms.sendMessage("Waila", "register", "com.draco18s.wildlife.integration.WailaIntegration.callbackRegister");
     }
    

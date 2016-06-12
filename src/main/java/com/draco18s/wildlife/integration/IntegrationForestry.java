@@ -7,6 +7,7 @@ import com.draco18s.wildlife.WildlifeBase;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 public class IntegrationForestry {
 	
@@ -14,11 +15,12 @@ public class IntegrationForestry {
 		Block b = GameRegistry.findBlock("Forestry", "saplingGE");
 		
 		if(b != null) {
-			HardLibAPI.plantManager.registerBlockType(b, BlockType.SAPLING);
 		
 			for(int i = 1; i <= 8; i++) {
+				HardLibAPI.plantManager.registerBlockType(new ItemStack(b, 1, i), BlockType.SAPLING);
 				b = GameRegistry.findBlock("Forestry", "log"+i);
-				WildlifeBase.treeCounter.addLogType(b);
+				HardLibAPI.treeCounter.addLogType(b);
+				//WildlifeBase.treeCounter.addLogType(b);
 				//do these generate as trees?
 				/*b = Block.getBlockFromName("fireproofLog"+i);
 				WildlifeBase.treeCounter.addLogType(b);*/

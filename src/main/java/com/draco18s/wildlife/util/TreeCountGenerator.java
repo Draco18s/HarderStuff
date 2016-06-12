@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.draco18s.hardlib.api.interfaces.ITreeTracker;
 import com.draco18s.wildlife.WildlifeEventHandler;
 
 
@@ -18,7 +19,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.IWorldGenerator;
 
-public class TreeCountGenerator {
+public class TreeCountGenerator implements ITreeTracker {
 	//private static ArrayList<Block> treeBlocks;
 	//private static ArrayList<Block> logBlocks;
 	private List<Block> logBlockList = new ArrayList<Block>();

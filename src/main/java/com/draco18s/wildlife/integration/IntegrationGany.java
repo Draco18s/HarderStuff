@@ -38,6 +38,7 @@ public class IntegrationGany {
 		HardLibAPI.cropManager.putCropWeather(b, off);
 		
 		b = Block.getBlockFromName("ganyssurface:coarse_dirt");
-		WildlifeBase.treeCounter.addDirtType(b);
+		HardLibAPI.treeCounter.addDirtType(b);
+		//WildlifeBase.treeCounter.addDirtType(b);
 	}
 }

@@ -18,6 +18,7 @@ import CustomOreGen.Util.CogOreGenEvent;
 
 import com.draco18s.hardlib.HashUtils;
 import com.draco18s.hardlib.api.HardLibAPI;
+import com.draco18s.hardlib.api.interfaces.IAutoPlanter.BlockType;
 import com.draco18s.hardlib.api.interfaces.ICropDataSupplier;
 import com.draco18s.hardlib.api.internal.CropWeatherOffsets;
 import com.draco18s.hardlib.events.EntityAnimalInteractEvent;
@@ -139,14 +140,14 @@ public class WildlifeEventHandler {
 	private float tempStatic;
 	private float rainStatic;
 	private final int WEEK_MODULO = 2400;
-	
+
 	//private int mod = 0;
 	//private boolean initialSet = false;
 	private HashMap<Integer,Long> lastWorldTime = new HashMap<Integer,Long>();
 	private long lastClientWorldTime = 0;
-	
+
 	public static WildlifeEventHandler instance;
-	
+
 	public WildlifeEventHandler() {
 		tempStatic = WildlifeBase.config.getFloat("staticTempModifier", "SEASONS", getSeasonTemp(0), -2, 2, "Takes the place of the season modifier when seasons are off.\n");
 		rainStatic = WildlifeBase.config.getFloat("staticRainModifier", "SEASONS", getSeasonRain(0), -2, 2, "Takes the place of the season modifier when seasons are off.\n");
@@ -233,7 +234,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}*/
-	
+
 	@SubscribeEvent
 	public void onEntityAdded(EntityJoinWorldEvent event) {
 		if(event.entity instanceof EntityAnimal && !event.entity.worldObj.isRemote) {
@@ -254,14 +255,14 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
-    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
+	public void onEntityConstructing(EntityEvent.EntityConstructing event) {
 		if(event.entity instanceof EntityCow && CowStats.get((EntityCow)event.entity) == null) {
-        	CowStats.register((EntityCow) event.entity);
+			CowStats.register((EntityCow) event.entity);
 		}
 	}
-	
+
 	/*@SideOnly(Side.CLIENT)
     public void onEntityConstructingClient(EntityJoinWorldEvent event)
     {
@@ -270,7 +271,7 @@ public class WildlifeEventHandler {
             CowStatsClient.register((EntityCow) event.entity);
         }
     }*/
-	
+
 	@SubscribeEvent
 	public void onEntityTick(LivingUpdateEvent event) {
 		/*if(event.entity instanceof EntityAnimal && !event.entity.worldObj.isRemote) {
@@ -284,7 +285,7 @@ public class WildlifeEventHandler {
 		}*/
 		if(event.entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)event.entity;
-			
+
 			player.addStat(StatsAchievements.playTime, 1);
 			if(player instanceof EntityPlayerMP) {
 				EntityPlayerMP p = (EntityPlayerMP)player;
@@ -296,7 +297,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	public EntityAgeTracker getTracker(EntityAnimal animal) {
 		EntityAIAging agingTask = null;
 		for(Object obj : animal.tasks.taskEntries) {
@@ -311,7 +312,7 @@ public class WildlifeEventHandler {
 		return null;
 		//return tracker.get(animal);
 	}
-	
+
 	@SubscribeEvent
 	public void onEntityDead(LivingDropsEvent event) {
 		if(event.entity.worldObj.isRemote) return;
@@ -415,11 +416,11 @@ public class WildlifeEventHandler {
 				foodItem.stackSize = 1 + rand.nextInt(2);
 				EntityItem e = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, foodItem.copy());
 				event.drops.add(e);
-	
+
 				foodItem.stackSize = 1 + rand.nextInt(2);
 				e = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, foodItem.copy());
 				event.drops.add(e);
-				
+
 				if(event.entity instanceof EntityCow) {
 					foodItem.stackSize = 4 + rand.nextInt(3);
 					e = new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, foodItem.copy());
@@ -487,7 +488,7 @@ public class WildlifeEventHandler {
 			p.addStat(StatsAchievements.killLizard, 1);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onPickup(PlayerEvent.ItemPickupEvent event) {
 		Item item = event.pickedUp.getEntityItem().getItem();
@@ -501,7 +502,7 @@ public class WildlifeEventHandler {
 			event.player.addStat(StatsAchievements.collectCompost, 1);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onCrafting(PlayerEvent.ItemCraftedEvent event) {
 		Item item = event.crafting.getItem();
@@ -512,7 +513,7 @@ public class WildlifeEventHandler {
 			event.player.addStat(StatsAchievements.craftThermometer, 1);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void harvestGrass(BlockEvent.HarvestDropsEvent event) {
 		if(event.block instanceof BlockTallGrass) {
@@ -533,45 +534,45 @@ public class WildlifeEventHandler {
 		}
 		if(event.block instanceof BlockCrops) {
 			Block block = event.world.getBlock(event.x, event.y, event.z - 1);
-	        Block block1 = event.world.getBlock(event.x, event.y, event.z + 1);
-	        Block block2 = event.world.getBlock(event.x - 1, event.y, event.z);
-	        Block block3 = event.world.getBlock(event.x + 1, event.y, event.z);
-	        Block block4 = event.world.getBlock(event.x - 1, event.y, event.z - 1);
-	        Block block5 = event.world.getBlock(event.x + 1, event.y, event.z - 1);
-	        Block block6 = event.world.getBlock(event.x + 1, event.y, event.z + 1);
-	        Block block7 = event.world.getBlock(event.x - 1, event.y, event.z + 1);
-	        
-	        boolean flag = block2 == Blocks.air || block2 == WildlifeBase.weeds
-	        		|| block3 == Blocks.air || block3 == WildlifeBase.weeds
-	        		|| block == Blocks.air || block == WildlifeBase.weeds
-	        		|| block1 == Blocks.air || block1 == WildlifeBase.weeds
-	        		|| block4 == Blocks.air || block4 == WildlifeBase.weeds
-	        		|| block5 == Blocks.air || block5 == WildlifeBase.weeds
-	        		|| block6 == Blocks.air || block6 == WildlifeBase.weeds
-	        		|| block7 == Blocks.air || block7 == WildlifeBase.weeds;
+			Block block1 = event.world.getBlock(event.x, event.y, event.z + 1);
+			Block block2 = event.world.getBlock(event.x - 1, event.y, event.z);
+			Block block3 = event.world.getBlock(event.x + 1, event.y, event.z);
+			Block block4 = event.world.getBlock(event.x - 1, event.y, event.z - 1);
+			Block block5 = event.world.getBlock(event.x + 1, event.y, event.z - 1);
+			Block block6 = event.world.getBlock(event.x + 1, event.y, event.z + 1);
+			Block block7 = event.world.getBlock(event.x - 1, event.y, event.z + 1);
 
-        	boolean flag3 = block2 == Blocks.carpet || block1 == Blocks.carpet
-        			|| block2 == Blocks.carpet || block3 == Blocks.carpet
-        			|| block4 == Blocks.carpet || block5 == Blocks.carpet
-        			|| block6 == Blocks.carpet || block7 == Blocks.carpet;
-	        if(!flag && !flag3) {
-	        	boolean flag0 = block2 == event.block || block3 == event.block;
-	            boolean flag1 = block == event.block || block1 == event.block;
-	            boolean flag2 = block4 == event.block || block5 == event.block || block6 == event.block || block7 == event.block;
-	            if (!(flag2 || flag0 && flag1)) {
-	            	EntityPlayer p = event.world.getClosestPlayer(event.x, event.y, event.z, 5);
-	            	if(p != null)
-	            		p.addStat(StatsAchievements.cropRotation, 1);
-	            }
-	        }
-	        else if(flag3) {
-	        	EntityPlayer p = event.world.getClosestPlayer(event.x, event.y, event.z, 5);
-	        	if(p != null)
-        			p.addStat(StatsAchievements.weedSuppressor, 1);
-	        }
+			boolean flag = block2 == Blocks.air || block2 == WildlifeBase.weeds
+					|| block3 == Blocks.air || block3 == WildlifeBase.weeds
+					|| block == Blocks.air || block == WildlifeBase.weeds
+					|| block1 == Blocks.air || block1 == WildlifeBase.weeds
+					|| block4 == Blocks.air || block4 == WildlifeBase.weeds
+					|| block5 == Blocks.air || block5 == WildlifeBase.weeds
+					|| block6 == Blocks.air || block6 == WildlifeBase.weeds
+					|| block7 == Blocks.air || block7 == WildlifeBase.weeds;
+
+			boolean flag3 = block2 == Blocks.carpet || block1 == Blocks.carpet
+					|| block2 == Blocks.carpet || block3 == Blocks.carpet
+					|| block4 == Blocks.carpet || block5 == Blocks.carpet
+					|| block6 == Blocks.carpet || block7 == Blocks.carpet;
+			if(!flag && !flag3) {
+				boolean flag0 = block2 == event.block || block3 == event.block;
+				boolean flag1 = block == event.block || block1 == event.block;
+				boolean flag2 = block4 == event.block || block5 == event.block || block6 == event.block || block7 == event.block;
+				if (!(flag2 || flag0 && flag1)) {
+					EntityPlayer p = event.world.getClosestPlayer(event.x, event.y, event.z, 5);
+					if(p != null)
+						p.addStat(StatsAchievements.cropRotation, 1);
+				}
+			}
+			else if(flag3) {
+				EntityPlayer p = event.world.getClosestPlayer(event.x, event.y, event.z, 5);
+				if(p != null)
+					p.addStat(StatsAchievements.weedSuppressor, 1);
+			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void chunkLoad(ChunkDataEvent.Load event) {
 		if(!event.world.isRemote) {
@@ -596,7 +597,7 @@ public class WildlifeEventHandler {
 			TreeDataHooks.readData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void chunkSave(ChunkDataEvent.Save event) {
 		if(!event.world.isRemote /*&& event.getChunk().isChunkLoaded*/) {
@@ -616,14 +617,14 @@ public class WildlifeEventHandler {
 			TreeDataHooks.saveData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
 		}
 	}
-	
+
 	//@SubscribeEvent
 	//public void chunkGen(DecorateBiomeEvent.Post event) {
 	//	if (trackTrees && !event.world.isRemote && event.world.provider.dimensionId > Integer.MIN_VALUE) {
 	//		Chunk c = event.world.getChunkFromBlockCoords(event.chunkX, event.chunkZ);
 	//		int cx = c.xPosition;
 	//		int cz = c.zPosition;
-			/*//int cx = event.worldX / 16;
+	/*//int cx = event.worldX / 16;
 			//int cz = event.worldZ / 16;
 			//System.out.println("Adding trees from DIM" + event.world.provider.dimensionId + ", chunk["+cx+","+cz+"] generation");
 			//long start = System.nanoTime();
@@ -649,7 +650,7 @@ public class WildlifeEventHandler {
 			//System.out.println(" --End chunk generation tree counting (" + (((System.nanoTime() - start)/1000)/1000f) + "ms)--");
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void chunkUnload(ChunkEvent.Unload event) {
 		if(!event.world.isRemote) {
@@ -657,103 +658,123 @@ public class WildlifeEventHandler {
 			TreeDataHooks.clearData(event.world, event.getChunk().xPosition, event.getChunk().zPosition);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onSaplingItemDead(ItemExpireEvent event) {
 		if (autoSaplings) {
 			EntityItem ent = event.entityItem;
-			//if ((ent.motionX < 0.001D) && (ent.motionZ < 0.001D)) {
-				ItemStack item = ent.getEntityItem();
-				if(item.stackSize > 1) {
-					ItemStack i2 = item.copy();
-					i2.stackSize -= 1;
-					EntityItem e = new EntityItem(event.entityItem.worldObj, event.entityItem.posX, event.entityItem.posY+0.25, event.entityItem.posZ, i2);
-					e.age = event.entityItem.age - 10;
-					event.entityItem.worldObj.spawnEntityInWorld(e);
-					item.stackSize = 1;
+			ItemStack item = ent.getEntityItem();
+			BlockType saplingtype = HardLibAPI.plantManager.getType(item);
+			System.out.println("Item " + item.getDisplayName() + " : " + saplingtype);
+			if(item.stackSize > 1) {
+				ItemStack i2 = item.copy();
+				i2.stackSize -= 1;
+				EntityItem e = new EntityItem(event.entityItem.worldObj, event.entityItem.posX, event.entityItem.posY+0.25, event.entityItem.posZ, i2);
+				e.age = event.entityItem.age - 10;
+				event.entityItem.worldObj.spawnEntityInWorld(e);
+				item.stackSize = 1;
+			}
+			if(saplingtype == BlockType.SAPLING || saplingtype == BlockType.SAPLING_ALLWAYS_2x2 || saplingtype == BlockType.SAPLING_SOMETIMES_2x2) {
+				Block id = Block.getBlockFromItem(item.getItem());
+				World world = ent.worldObj;
+				int x = MathHelper.floor_double(ent.posX);
+				int y = MathHelper.floor_double(ent.posY);
+				int z = MathHelper.floor_double(ent.posZ);
+				int probability = 10;
+				if(item.getItemDamage() == 0) {
+					probability = 14;
 				}
-				if ((item != null) && ((item.getItem() instanceof ItemBlock))) {
-					Block id = Block.getBlockFromItem(item.getItem());
-					World world = ent.worldObj;
-					int x = MathHelper.floor_double(ent.posX);
-					int y = MathHelper.floor_double(ent.posY);
-					int z = MathHelper.floor_double(ent.posZ);
-					int r = 10;
-					if(item.getItemDamage() == 0) {
-						r = 14;
-					}
-					if(item.getItemDamage() == 2) {
-						r = 12;
-					}
-					if((HardLibAPI.plantManager.getType(id) != null)) {
-						if((id.canPlaceBlockAt(world, x, y, z)) && (item.getItemDamage() == 3 || item.getItemDamage() == 5 || rand.nextInt(r) < 6)) {
-							if(item.getItemDamage() == 5 || ((item.getItemDamage() == 3 || item.getItemDamage() == 1) && rand.nextInt(4) == 0) || (item.getItemDamage() == 1 && world.getBiomeGenForCoords(x, z).getBiomeClass() == BiomeGenTaiga.class)) {
-								handle2x2Placement(ent, item, id, x, y, z);
-							}
-							else {
-								//handle swamp biome issues
-								if(BiomeDictionary.isBiomeOfType(world.getBiomeGenForCoords(x, z), BiomeDictionary.Type.SWAMP) && world.getBlock(x, y, z).getMaterial() == Material.water) {
-									boolean placed = false;
-									for(int oy = 0; oy <= 3&&!placed; oy++) {//4, 11, 11?
-										for(int ox = -5; ox <= 5&&!placed; ox++) {
-											for(int oz = -5; oz <= 5&&!placed; oz++) {
-												if(world.getBlock(x+ox, y+oy, z+oz) == Blocks.grass) {
-													world.setBlock(x+ox, y+oy+1, z+oz, id, item.getItemDamage()|8, 3);
-													if(trackTrees)
-														TreeDataHooks.addTree(world, x+ox, y+oy+1, z+oz, rand.nextInt(3000));
-													placed = true;
-												}
-											}											
-										}										
-									}
-								}
-								else {
-									world.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
-									if(trackTrees)
-										TreeDataHooks.addTree(world, x, y, z, rand.nextInt(3000));
-								}
-							}
-						}
-						else if(item.getItemDamage() == 3) {
-							//jungle floor is messy
-							if(world.getBlock(x, y-1, z) == Blocks.leaves && world.getBlock(x, y-2, z) == Blocks.grass) {
-								world.setBlock(x, y-1, z, id, item.getItemDamage()|8, 3);
-								if(trackTrees)
-									TreeDataHooks.addTree(world, x, y-1, z, rand.nextInt(3000));
-							}
-						}
-					}
+				if(item.getItemDamage() == 2) {
+					probability = 12;
 				}
-				else {
-					if(item.getItem() == Items.reeds) {
-						Block id = Blocks.reeds;
-						World world = ent.worldObj;
-						int x = MathHelper.floor_double(ent.posX);
-						int y = MathHelper.floor_double(ent.posY);
-						int z = MathHelper.floor_double(ent.posZ);
-						if(id.canPlaceBlockAt(world, x, y, z) && world.isAirBlock(x, y, z)) {
-							world.setBlock(x, y, z, id, item.getItemDamage(), 3);
+				if((saplingtype != null)) {
+					if((id.canPlaceBlockAt(world, x, y, z)) && (saplingtype == BlockType.SAPLING_ALLWAYS_2x2 || rand.nextInt(probability) < 6)) {
+						boolean biomeFlag = true;
+						//vanilla spruce tree biome check
+						if(item.getItem() == Item.getItemFromBlock(Blocks.sapling) && item.getItemDamage() == 1) {
+							biomeFlag = world.getBiomeGenForCoords(x, z).getBiomeClass() == BiomeGenTaiga.class;
+						}
+						if(saplingtype == BlockType.SAPLING_ALLWAYS_2x2 || (saplingtype == BlockType.SAPLING_SOMETIMES_2x2 && rand.nextInt(4) == 0 && biomeFlag)) {
+							handle2x2Placement(ent, item, id, x, y, z);
 						}
 						else {
-							boolean placed = false;
-							for(int oy = 0; oy <= 2&&!placed; oy++) {
-								for(int ox = -3; ox <= 3&&!placed; ox++) {
-									for(int oz = -3; oz <= 3&&!placed; oz++) {
-										if(id.canPlaceBlockAt(world, x+ox, y+oy, z+oz) && world.isAirBlock(x+ox, y+oy, z+oz)) {
-											world.setBlock(x+ox, y+oy, z+oz, id, item.getItemDamage(), 3);
-											//if(--item.stackSize == 0)
-											placed = true;
-										}
+							//handle swamp biome issues
+							if(BiomeDictionary.isBiomeOfType(world.getBiomeGenForCoords(x, z), BiomeDictionary.Type.SWAMP) && world.getBlock(x, y, z).getMaterial() == Material.water) {
+								boolean placed = false;
+								for(int oy = 0; oy <= 3&&!placed; oy++) {//4, 11, 11?
+									for(int ox = -5; ox <= 5&&!placed; ox++) {
+										for(int oz = -5; oz <= 5&&!placed; oz++) {
+											if(world.getBlock(x+ox, y+oy, z+oz) == Blocks.grass) {
+												world.setBlock(x+ox, y+oy+1, z+oz, id, item.getItemDamage()|8, 3);
+												if(trackTrees)
+													TreeDataHooks.addTree(world, x+ox, y+oy+1, z+oz, rand.nextInt(3000));
+												placed = true;
+											}
+										}											
+									}										
+								}
+							}
+							else { //standard trees
+								world.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
+								if(trackTrees)
+									TreeDataHooks.addTree(world, x, y, z, rand.nextInt(3000));
+							}
+						}
+					}
+					//jungle floor is messy
+					else if(item.getItem() == Item.getItemFromBlock(Blocks.sapling) && item.getItemDamage() == 3) {
+						if(world.getBlock(x, y-1, z) == Blocks.leaves && world.getBlock(x, y-2, z) == Blocks.grass) {
+							world.setBlock(x, y-1, z, id, item.getItemDamage()|8, 3);
+							if(trackTrees)
+								TreeDataHooks.addTree(world, x, y-1, z, rand.nextInt(3000));
+						}
+					}
+				}
+			}
+			if(saplingtype == BlockType.REEDS || saplingtype == BlockType.MUSHROOM || saplingtype == BlockType.CACTUS || saplingtype == BlockType.NETHERSTALK) {
+				
+				Block id = Block.getBlockFromItem(item.getItem());
+				World world = ent.worldObj;
+				int x = MathHelper.floor_double(ent.posX);
+				int y = MathHelper.floor_double(ent.posY);
+				int z = MathHelper.floor_double(ent.posZ);
+
+				if(id == Blocks.air) {
+					System.out.println("Item " + item.getDisplayName() + " : " + (item.getItem() instanceof IPlantable));
+					if(item.getItem() instanceof IPlantable) {
+						id = ((IPlantable)item.getItem()).getPlant(world, x, y, z);
+					}
+					else if(saplingtype == BlockType.REEDS) {
+						id = Blocks.reeds;
+					}
+					else if(saplingtype == BlockType.NETHERSTALK) {
+						id = Blocks.nether_wart;
+					}
+				}
+				System.out.println(id);
+				if(id != Blocks.air) {
+					if(id.canPlaceBlockAt(world, x, y, z) && world.isAirBlock(x, y, z)) {
+						world.setBlock(x, y, z, id, item.getItemDamage(), 3);
+					}
+					else {
+						boolean placed = false;
+						for(int oy = 0; oy <= 2&&!placed; oy++) {
+							for(int ox = -3; ox <= 3&&!placed; ox++) {
+								for(int oz = -3; oz <= 3&&!placed; oz++) {
+									if(id.canPlaceBlockAt(world, x+ox, y+oy, z+oz) && world.isAirBlock(x+ox, y+oy, z+oz)) {
+										world.setBlock(x+ox, y+oy, z+oz, id, item.getItemDamage(), 3);
+										//if(--item.stackSize == 0)
+										placed = true;
 									}
 								}
 							}
 						}
 					}
 				}
-			//}
+			}
 		}
 	}
-	
+
 	private void handle2x2Placement(EntityItem ent, ItemStack item, Block id, int x, int y, int z) {
 		//System.out.println("2x2 code:");
 		int area = canMake2x2(ent.worldObj, id, x, y, z);
@@ -799,30 +820,30 @@ public class WildlifeEventHandler {
 					z = (int) pos.zCoord;
 					area = canMake2x2(ent.worldObj, id, x, y, z);
 					switch(area) {
-						case 1:
-							ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x+1, y, z+1, id, item.getItemDamage()|8, 3);
-							break;
-						case 2:
-							ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x+1, y, z-1, id, item.getItemDamage()|8, 3);
-							break;
-						case 3:
-							ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x-1, y, z-1, id, item.getItemDamage()|8, 3);
-							break;
-						case 4:
-							ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
-							ent.worldObj.setBlock(x-1, y, z+1, id, item.getItemDamage()|8, 3);
-							break;
+					case 1:
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x+1, y, z+1, id, item.getItemDamage()|8, 3);
+						break;
+					case 2:
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x+1, y, z-1, id, item.getItemDamage()|8, 3);
+						break;
+					case 3:
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x-1, y, z-1, id, item.getItemDamage()|8, 3);
+						break;
+					case 4:
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x-1, y, z+1, id, item.getItemDamage()|8, 3);
+						break;
 					}
 					if(trackTrees) {
 						TreeDataHooks.addTree(ent.worldObj, x, y, z, rand.nextInt(3000));
@@ -887,7 +908,7 @@ public class WildlifeEventHandler {
 			//System.out.println("No valid 2x2 centered @ (" +x + "," + y + "," + z +")");
 		}
 	}
-	
+
 	private boolean placeAdjacent(World worldObj, Block id, int itemDamage, int x, int y, int z) {
 		if((id.canPlaceBlockAt(worldObj, x+1, y, z) || worldObj.getBlock(x+1, y, z) instanceof BlockSapling) && (id.canPlaceBlockAt(worldObj, x, y, z+1) || worldObj.getBlock(x, y, z+1) instanceof BlockSapling) && (id.canPlaceBlockAt(worldObj, x+1, y, z+1) || worldObj.getBlock(x+1, y, z+1) instanceof BlockSapling)) {
 			//System.out.println("Place adjacent A");
@@ -961,7 +982,7 @@ public class WildlifeEventHandler {
 		boolean xpzn = id.canPlaceBlockAt(worldObj, x+1, y, z-1) || worldObj.getBlock(x+1, y, z-1) == id;
 		boolean xnzp = id.canPlaceBlockAt(worldObj, x-1, y, z+1) || worldObj.getBlock(x-1, y, z+1) == id;
 		boolean xnzn = id.canPlaceBlockAt(worldObj, x-1, y, z-1) || worldObj.getBlock(x-1, y, z-1) == id;
-		
+
 		if(xp && zp && xpzp) {
 			return 1;
 		}
@@ -976,7 +997,7 @@ public class WildlifeEventHandler {
 		}
 		return 0;
 	}
-	
+
 	private void complete2x2(World world, Block id, int meta, int x, int y, int z) {
 		//System.out.println("Checking 2x2: " + x + "," + y + "," + z);
 		boolean xp = world.getBlock(x+1, y, z) == Blocks.sapling;
@@ -987,14 +1008,14 @@ public class WildlifeEventHandler {
 		boolean xpzn = world.getBlock(x+1, y, z-1) == Blocks.sapling;
 		boolean xnzp = world.getBlock(x-1, y, z+1) == Blocks.sapling;
 		boolean xnzn = world.getBlock(x-1, y, z-1) == Blocks.sapling;
-		
+
 		int t = (xp?1:0) + (zp?1:0) + (xpzp?1:0);
 		//System.out.println("aCompleting with " + t);
 		if(t == 2) {
 			/*System.out.println(" - " + xp);
 			System.out.println(" - " + zp);
 			System.out.println(" - " + xpzp);*/
-			
+
 			if(id.canPlaceBlockAt(world,x+1, y, z))
 				world.setBlock(x+1, y, z,   id, meta|8, 3);
 			if(id.canPlaceBlockAt(world,x,   y, z+1))
@@ -1065,12 +1086,12 @@ public class WildlifeEventHandler {
 			}
 			return;
 		}
-		
+
 		return;
 	}
-	
+
 	//private float sunHeightVal;
-	
+
 
 	@SubscribeEvent
 	public void clientTickStart(TickEvent.ClientTickEvent event) {
@@ -1080,19 +1101,19 @@ public class WildlifeEventHandler {
 			if(w == null) return;
 
 			//if(lastClientWorldTime == w.getWorldTime()) return;
-			
+
 			//sunHeightVal = (float)Math.sin((w.getCelestialAngle(0)+0.25f)*2*Math.PI);
 			boolean initialSet = true;
 			if(Math.abs(lastClientWorldTime - w.getWorldTime()) > 500) {
 				initialSet = false;
 			}
 			lastClientWorldTime = w.getWorldTime();
-			
+
 			if((!initialSet || w.getTotalWorldTime() % (this.weekLength * WEEK_MODULO) == 0)) {
 				//initialSet = true;
 				//Season sea = Season.getSeason(event.world.getTotalWorldTime());
 				//System.out.println("In season: " + sea.name());
-				
+
 				float tempMod;
 				float rainMod;
 				if(doYearCycle) {
@@ -1153,7 +1174,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void tickStart(TickEvent.WorldTickEvent event) {
 		if(event.phase == TickEvent.Phase.END) {
@@ -1161,7 +1182,7 @@ public class WildlifeEventHandler {
 			if(lastWorldTime.containsKey(event.world.provider.dimensionId) && lastWorldTime.get(event.world.provider.dimensionId) == event.world.getWorldTime()) return;
 
 			float sunHeightVal = (float)Math.sin((event.world.getCelestialAngle(0)+0.25f)*2*Math.PI);
-			
+
 			if (autoSaplings && trackTrees) {
 				TreeDataHooks.ageTrees(event.world);
 			}
@@ -1172,7 +1193,7 @@ public class WildlifeEventHandler {
 			event.world.getTotalWorldTime();
 			long lwt = event.world.getWorldTime();
 			lastWorldTime.put(event.world.provider.dimensionId,lwt);
-			
+
 			/*if(!doYearCycle && !initialSet) {
 				float tempMod = getSeasonTemp(0);
 				float rainMod = getSeasonRain(0);
@@ -1204,7 +1225,7 @@ public class WildlifeEventHandler {
 					}
 				}
 			}*/
-			
+
 			if((!initialSet || event.world.getTotalWorldTime() % (this.weekLength * WEEK_MODULO) == 0)) {
 				//initialSet = true;
 				//Season sea = Season.getSeason(event.world.getTotalWorldTime());
@@ -1281,14 +1302,14 @@ public class WildlifeEventHandler {
 		m = Math.sin(m)*0.6/* - 0.2*/;
 		return (float)m;
 	}
-	
+
 	@SubscribeEvent
 	public void onBlockUpdate(SpecialBlockEvent.BlockUpdateEvent event) {
 		if(event.block == Blocks.snow_layer || event.block == WildlifeBase.snowyGrass) handleSnow(event);
 		else if(event.block == Blocks.ice) handleIce(event);
 		else if(event.block instanceof IGrowable || event.block instanceof BlockReed) handleCrops(event);
 	}
-	
+
 	public static long getLastWorldTime(int dim) {
 		/*if(!doYearCycle) {
 			return 0;
@@ -1300,15 +1321,15 @@ public class WildlifeEventHandler {
 			return instance.lastClientWorldTime;
 		}
 	}
-	
+
 	private void handleCrops(SpecialBlockEvent.BlockUpdateEvent event) {
 		if(doSlowCrops) {
-	        World world = event.world;
-	        int x = event.x;
-	        int y = event.y;
-	        int z = event.z;
-	        int blockMetadata = event.blockMetadata;
-	        Block block = event.block;
+			World world = event.world;
+			int x = event.x;
+			int y = event.y;
+			int z = event.z;
+			int blockMetadata = event.blockMetadata;
+			Block block = event.block;
 			BiomeGenBase bio = event.biome;
 			int rr = 0;
 			int inc = 0;
@@ -1347,88 +1368,88 @@ public class WildlifeEventHandler {
 					}
 				}
 			}
-			
+
 			/*if(inc) {
 				event.setCanceled(true);
 			}
 			else {*/
-				if(doBiomeCrops) {
-					float t = bio.temperature;
-					float r = bio.rainfall;
-					if(BiomeDictionary.isBiomeOfType(bio, Type.OCEAN) || BiomeDictionary.isBiomeOfType(bio, Type.RIVER)) {
-						t += getSeasonTemp(getLastWorldTime(world.provider.dimensionId)) * 0.333f;
-					}
-					
-					if(BiomeDictionary.isBiomeOfType(bio, Type.NETHER) != world.getPrecipitationHeight(x, z) > y) {
-						//if the crop is inside, halve the effects of climate.
-						//nether is treated in reverse
-						t = (t + 0.8f)/2f;
-						r = (r + 1)/2f;
-					}
-					if(block instanceof IPlantable) {
-						Block block2 = ((IPlantable)block).getPlant(world, x, y, z);
-						if(block != block2)
-							block = block2;
-					}
-					CropWeatherOffsets o = HardLibAPI.cropManager.getCropOffsets(block);
-					if(block instanceof ICropDataSupplier) {
-						o = ((ICropDataSupplier)block).getCropData(world, x, y, z);
-					}
-					if(o != null) {
-						if(o.tempTimeOffset != 0) {
-							if(doYearCycle)
-								t = t - getSeasonTemp(getLastWorldTime(world.provider.dimensionId)) + getSeasonTemp(getLastWorldTime(world.provider.dimensionId) + o.tempTimeOffset);
-							//else
-							//	t = t + getSeasonTemp(o.tempTimeOffset);
-						}
-						t += o.tempFlat;
-						if(o.rainTimeOffset != 0) {
-							if(doYearCycle)
-								r = r - getSeasonRain(getLastWorldTime(world.provider.dimensionId)) + getSeasonRain(getLastWorldTime(world.provider.dimensionId) + o.rainTimeOffset);
-							//else
-							//	r = r + getSeasonRain(o.tempTimeOffset);
-						}
-						r += o.rainFlat;
-					}
-					
-					//simplifies the following equation
-					t -= 0.4f;
-					r -= 1.75;
-					
-					//rr = (int) Math.round((Math.pow(t-1.5f,4)*0.6f+(t*t*2))-((2.2*r*r)+0.3f*Math.pow(r+2,4)))+7;
-					rr = (int) Math.round((Math.pow(t-1.5f,4)*0.6f)+(t*t*2)-((r*r*-2.2)-0.3f*Math.pow(r+2f,4)+7));
-					if(rr < 0) rr--;
-					if(rr < -8) rr = -8;
-					if(rr > cropsWorst) rr = cropsWorst;
-					//if(inc) {
-						rr += 2*inc;
-					//}
-					//t += 0.4f;
-					//r += 1.75;
-					//System.out.println("Crop "+block.getUnlocalizedName()+" chance: 1/" + (10+rr) + "[t="+bio.temperature+"("+t+"),r=" + bio.rainfall + "(" + r + ")]");
+			if(doBiomeCrops) {
+				float t = bio.temperature;
+				float r = bio.rainfall;
+				if(BiomeDictionary.isBiomeOfType(bio, Type.OCEAN) || BiomeDictionary.isBiomeOfType(bio, Type.RIVER)) {
+					t += getSeasonTemp(getLastWorldTime(world.provider.dimensionId)) * 0.333f;
 				}
-				if(block == WildlifeBase.weeds) {
-					if(rr >= 0) rr /= 2;
-					else rr -= 4;
-					if(rr < -9) rr = -9;
+
+				if(BiomeDictionary.isBiomeOfType(bio, Type.NETHER) != world.getPrecipitationHeight(x, z) > y) {
+					//if the crop is inside, halve the effects of climate.
+					//nether is treated in reverse
+					t = (t + 0.8f)/2f;
+					r = (r + 1)/2f;
 				}
-				if(block == Blocks.reeds) {
-					rr -= 3;
-					if(rr < -8) rr = -8;
+				if(block instanceof IPlantable) {
+					Block block2 = ((IPlantable)block).getPlant(world, x, y, z);
+					if(block != block2)
+						block = block2;
 				}
-				
-				if(rand.nextInt(10+rr) != 0) {
-					event.setCanceled(true);
+				CropWeatherOffsets o = HardLibAPI.cropManager.getCropOffsets(block);
+				if(block instanceof ICropDataSupplier) {
+					o = ((ICropDataSupplier)block).getCropData(world, x, y, z);
 				}
+				if(o != null) {
+					if(o.tempTimeOffset != 0) {
+						if(doYearCycle)
+							t = t - getSeasonTemp(getLastWorldTime(world.provider.dimensionId)) + getSeasonTemp(getLastWorldTime(world.provider.dimensionId) + o.tempTimeOffset);
+						//else
+						//	t = t + getSeasonTemp(o.tempTimeOffset);
+					}
+					t += o.tempFlat;
+					if(o.rainTimeOffset != 0) {
+						if(doYearCycle)
+							r = r - getSeasonRain(getLastWorldTime(world.provider.dimensionId)) + getSeasonRain(getLastWorldTime(world.provider.dimensionId) + o.rainTimeOffset);
+						//else
+						//	r = r + getSeasonRain(o.tempTimeOffset);
+					}
+					r += o.rainFlat;
+				}
+
+				//simplifies the following equation
+				t -= 0.4f;
+				r -= 1.75;
+
+				//rr = (int) Math.round((Math.pow(t-1.5f,4)*0.6f+(t*t*2))-((2.2*r*r)+0.3f*Math.pow(r+2,4)))+7;
+				rr = (int) Math.round((Math.pow(t-1.5f,4)*0.6f)+(t*t*2)-((r*r*-2.2)-0.3f*Math.pow(r+2f,4)+7));
+				if(rr < 0) rr--;
+				if(rr < -8) rr = -8;
+				if(rr > cropsWorst) rr = cropsWorst;
+				//if(inc) {
+				rr += 2*inc;
+				//}
+				//t += 0.4f;
+				//r += 1.75;
+				//System.out.println("Crop "+block.getUnlocalizedName()+" chance: 1/" + (10+rr) + "[t="+bio.temperature+"("+t+"),r=" + bio.rainfall + "(" + r + ")]");
+			}
+			if(block == WildlifeBase.weeds) {
+				if(rr >= 0) rr /= 2;
+				else rr -= 4;
+				if(rr < -9) rr = -9;
+			}
+			if(block == Blocks.reeds) {
+				rr -= 3;
+				if(rr < -8) rr = -8;
+			}
+
+			if(rand.nextInt(10+rr) != 0) {
+				event.setCanceled(true);
+			}
 			//}
-		}
+	}
 	}
 
 	private void handleIce(SpecialBlockEvent.BlockUpdateEvent event) {
 		if(doSnowMelt) {
 			int light = event.world.getSavedLightValue(EnumSkyBlock.Sky, event.x, event.y, event.z);
 			if(light <= 7) return;
-			
+
 			float temp = event.biome.temperature;
 			float hot = 0;
 			int adj = 0;
@@ -1465,7 +1486,7 @@ public class WildlifeEventHandler {
 					}	
 				}
 				hot = hot/16f*9f;
-				
+
 				//if outside/near outside, take into account biome weather
 				if(light > 7) {
 					hot += (temp);
@@ -1478,7 +1499,7 @@ public class WildlifeEventHandler {
 				r = (int)Math.min((hot - 0.2f) * 24, 6) + (adj == 8?2:0) - (adj > 8?256:0) + (adj <= 1?8:0);
 				if(r > 9) r = 9;
 				//if((hot >= 0.19f))
-					//System.out.println(event.biome.temperature + "," + hot + "," + adj + ":" + r);
+				//System.out.println(event.biome.temperature + "," + hot + "," + adj + ":" + r);
 				//if(hot > 1) System.out.println(" - " + event.x + " " + event.y + " " + event.z);
 				//might be too slow
 			}
@@ -1510,19 +1531,19 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	private void handleSnow(SpecialBlockEvent.BlockUpdateEvent event) {
 		boolean inc = true;
 		int mm;
 		int wet;
 		Block b;
-        World world = event.world;
-        int x = event.x;
-        int y = event.y;
-        int z = event.z;
-        int blockMetadata = event.blockMetadata;
-        BiomeGenBase biome = event.biome;
-        Block block = event.block;
+		World world = event.world;
+		int x = event.x;
+		int y = event.y;
+		int z = event.z;
+		int blockMetadata = event.blockMetadata;
+		BiomeGenBase biome = event.biome;
+		Block block = event.block;
 		if(biome.temperature < 0.15f && world.isRaining()) {
 			wet = Math.round(biome.rainfall * 2);
 			if(wet > 6) wet = 6;
@@ -1637,7 +1658,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onMilkCow(EntityAnimalInteractEvent.CowMilkEvent event) {
 		if(event.entity instanceof EntityCow) {
@@ -1717,7 +1738,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onBreakCrops(BreakEvent event) {
 		if((event.block instanceof BlockCrops || event.block instanceof BlockStem) &&  event.block != WildlifeBase.weeds) {
@@ -1727,7 +1748,7 @@ public class WildlifeEventHandler {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void itemFrameCompare(ItemFrameComparatorPowerEvent event) {
 		if(event.stack == null) return;
@@ -1753,7 +1774,7 @@ public class WildlifeEventHandler {
 			entityitemframe.worldObj.scheduleBlockUpdate(x+ox, y, z+oz, Blocks.powered_comparator, (this.weekLength * WEEK_MODULO / 2));//recheck twice a week
 		}
 	}
-	
+
 	public static float getThermometerReading(World world, int x, int y, int z, ItemStack stack) {
 		long lwt = getLastWorldTime(world.provider.dimensionId);
 		NBTTagCompound stackTagCompound = stack.stackTagCompound;
@@ -1782,7 +1803,7 @@ public class WildlifeEventHandler {
 		}
 		return tt;
 	}
-	
+
 	public static float getRainmeterReading(World world, int x, int y, int z, ItemStack stack) {
 		long lwt = getLastWorldTime(world.provider.dimensionId);
 		NBTTagCompound stackTagCompound = stack.stackTagCompound;
@@ -1804,7 +1825,7 @@ public class WildlifeEventHandler {
 				int or = stackTagCompound.getInteger("temptime");
 				offs = new CropWeatherOffsets(tf,rf,ot,or);
 			}
-			
+
 			if(offs.rainTimeOffset != 0) {
 				tt = tt - getSeasonRain(lwt) + getSeasonRain(lwt + offs.rainTimeOffset);
 			}
@@ -1812,27 +1833,27 @@ public class WildlifeEventHandler {
 		}
 		return tt;
 	}
-	
+
 	public static BiomeWeatherData getBiomeData(BiomeGenBase bio) {
 		return instance.biomeTemps.get(bio.biomeID);
 	}
-	
+
 	private static class FoodDrops {
 		public Item dropped;
 		public int num;
 		private int itemID;
-		
+
 		public FoodDrops(Item i, int n) {
 			dropped = i;
 			num = n;
 			itemID = Item.getIdFromItem(i);
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return itemID;
 		}
-		
+
 		@Override
 		public boolean equals(Object o) {
 			if(o instanceof FoodDrops) {
@@ -1842,13 +1863,13 @@ public class WildlifeEventHandler {
 			return false;
 		}
 	}
-	
+
 	private static class BiomeWeatherData {
 		public float temp;
 		public float rain;
 		public float tempScale;
 		public float rainScale;
-		
+
 		/*
 		 * TODO: Figure out what mushrooms I was on and fix this.
 		 */

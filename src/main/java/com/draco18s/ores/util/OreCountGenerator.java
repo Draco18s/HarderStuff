@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.logging.log4j.Level;
+
 import com.draco18s.hardlib.HashUtils;
 import com.draco18s.hardlib.api.HardLibAPI;
 import com.draco18s.hardlib.api.internal.BlockWrapper;
@@ -18,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -44,16 +47,54 @@ public class OreCountGenerator {
 		for(BlockWrapper b : list.keySet()) {
 			blockList.add(new OreCounter(b));
 		}
+		Chunk chunk = world.getChunkFromChunkCoords(chunkX, chunkZ);
+		ExtendedBlockStorage[] extStore = chunk.getBlockStorageArray();
+		for(int y=0; y < 256; y++) {
+			if(y % 8 == 0 && y > 0) {
+				for(int b=0; b < blockList.size(); ++b) {
+					OreCounter c = blockList.get(b);
+					OreDataHooks.putOreData(world, chunkX, y-8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f)));
+					c.cycleCounts();
+				}
+			}
+			for(int x=0; x < 16; ++x) {
+				for(int z=0; z < 16; ++z) {
+					Block blockAt = chunk.getBlock(x, y, z);
+					int meta = chunk.getBlockMetadata(x, y, z);
+					if(blockAt != Blocks.air) {
+						for(int bl = 0; bl < blockList.size(); bl++) {
+							OreCounter c = blockList.get(bl);
+							if(blockAt == c.b.block) {
+				        		int mm = 0;
+				        		if(c.meta == -1) {
+				        			mm = meta+1;
+				        		}
+				        		else if(c.meta == meta){
+				        			mm = 16;
+				        		}
+				        		c.countA += mm;
+							}
+						}
+					}
+
+		        	//if(chunkX == 0 && chunkZ == 0) {
+		        	//	if(x == 3 && z == 3 && y < 32) {
+		        	//		System.out.println("At 3,"+y+",3: " + blockAt.getUnlocalizedName() + ":" + meta);
+		        	//	}
+		        	//}
+				}
+			}
+		}
 		
-		ExtendedBlockStorage[] extStore = world.getChunkFromChunkCoords(chunkX, chunkZ).getBlockStorageArray();
+		/*ExtendedBlockStorage[] extStore = world.getChunkFromChunkCoords(chunkX, chunkZ).getBlockStorageArray();
 		int lastY = 0;
 		for(ExtendedBlockStorage ext : extStore) {
 			if(ext == null) {
 				for(int b=0; b < blockList.size(); ++b) {
 					OreCounter c = blockList.get(b);
-					OreDataHooks.putOreData(world, chunkX, lastY, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+					OreDataHooks.putOreData(world, chunkX, lastY, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f)));
 					c.cycleCounts();
-					OreDataHooks.putOreData(world, chunkX, lastY+8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+					OreDataHooks.putOreData(world, chunkX, lastY+8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f)));
 					c.cycleCounts();
 				}
 				lastY+=16;
@@ -82,12 +123,6 @@ public class OreCountGenerator {
 				        		else if(c.meta == m){
 				        			mm = 16;
 				        		}
-				        		/*if(c.b.b == OresBase.oreRedstone) {
-					        		mm = 16;
-					        	}
-				        		else {
-					        		++mm;
-					        	}*/
 				        		c.countA += mm;
 				        	}
 				        }
@@ -96,13 +131,7 @@ public class OreCountGenerator {
 	        }
 			for(int b=0; b < blockList.size(); ++b) {
 				OreCounter c = blockList.get(b);
-	        	/*if(chunkX == 5 && chunkZ == 13 && c.b.b.getUnlocalizedName().contains("redstone")) {
-	        		System.out.println("OCG: " + ext.getYLocation() +"!"+c.b.b.getUnlocalizedName() + ": " + c.countA);
-	        	}*/
-				/*if(c.countA > 0 && c.b.b.getUnlocalizedName().contains("redstone")) {
-					System.out.println("OCG: " + chunkX + "," + chunkZ + " -> " + c.countA);
-				}*/
-				OreDataHooks.putOreData(world, chunkX, ext.getYLocation(), chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+				OreDataHooks.putOreData(world, chunkX, ext.getYLocation(), chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f)));
 				c.cycleCounts();
 			}
 			for(int x=0; x < 16; ++x) {
@@ -125,13 +154,13 @@ public class OreCountGenerator {
 				        		else if(c.meta == m){
 				        			mm = 16;
 				        		}
-				        		/*if(c.b.b == OresBase.oreRedstone) {
-					        		mm = 16;
-					        	}
-				        		else {
-					        		++mm;
-					        	}*/
 				        		c.countA += mm;
+				        	}
+				        	if(c.b.block == OresBase.oreSilver && chunkX == 0 && chunkZ == 0) {
+				        		if(x == 3 && z == 3) {
+				        			Block bbid = Block.getBlockById(l);
+				        			System.out.println("At 3,"+(y + ext.getYLocation())+",3: " + bbid.getUnlocalizedName() + ":" + metas.get(x, y, z));
+				        		}
 				        	}
 				        }
 					}
@@ -139,10 +168,7 @@ public class OreCountGenerator {
 	        }
 			for(int b=0; b < blockList.size(); ++b) {
 				OreCounter c = blockList.get(b);
-	        	/*if(chunkX == 5 && chunkZ == 13 && c.b.b.getUnlocalizedName().contains("redstone")) {
-	        		System.out.println("OCG: " + (ext.getYLocation()+8) +"!"+c.b.b.getUnlocalizedName() + ": " + c.countA);
-	        	}*/
-				OreDataHooks.putOreData(world, chunkX, ext.getYLocation()+8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
+				OreDataHooks.putOreData(world, chunkX, ext.getYLocation()+8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f)));
 
 				if(!(c.b.block instanceof BlockHardOreBase) && c.countA > 0) {
 					OreFlowerData dat = list.get(c.b);
@@ -162,12 +188,14 @@ public class OreCountGenerator {
 					if(c.b.block != OresBase.oreIron && c.b.block != OresBase.oreGold ) {
 						OresBase.instance.addArbitraryOre(c.b.block);
 					}
+					if(chunkX == 0 && chunkZ == 0 && ext.getYLocation() < 90) {
+						System.out.println("Post spawn: " + c.b.block.getUnlocalizedName() + ":" + c.b.meta + " => " + c.countA);
+					}
 				}
-				
 				c.cycleCounts();
 			}
 			lastY = ext.getYLocation();
-		}
+		}*/
 	}
 	
 	private class OreCounter extends Object{

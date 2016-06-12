@@ -10,6 +10,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 
 import net.minecraft.block.Block; 
+import net.minecraft.item.ItemStack;
 
 
 public class IntegrationTFC { 
@@ -17,23 +18,30 @@ public class IntegrationTFC {
 	public static void registerTFCTrees() {
 		Block b = GameRegistry.findBlock("terrafirmacraft", "sapling"); 
 
-		if(b != null) { 
-			HardLibAPI.plantManager.registerBlockType(b, BlockType.SAPLING); 
+		if(b != null) {
 
-			for(int i = 1; i <= 16; i++) { 
+			for(int i = 1; i <= 16; i++) {
+				HardLibAPI.plantManager.registerBlockType(new ItemStack(b, 1, i), BlockType.SAPLING); 
 				b = GameRegistry.findBlock("terrafirmacraft", "log"+i); 
-				WildlifeBase.treeCounter.addLogType(b); 
-			} 
+				HardLibAPI.treeCounter.addLogType(b);
+				//WildlifeBase.treeCounter.addLogType(b); 
+			}
 		}
 		b = GameRegistry.findBlock("terrafirmacraft", "sapling2"); 
 
 		if(b != null) { 
-			HardLibAPI.plantManager.registerBlockType(b, BlockType.SAPLING); 
 
-			for(int i = 1; i <= 1; i++) { 
-				b = GameRegistry.findBlock("terrafirmacraft", "log2"+i); 
-				WildlifeBase.treeCounter.addLogType(b); 
-			} 
-		} 
+			for(int i = 1; i <= 1; i++) {
+				HardLibAPI.plantManager.registerBlockType(new ItemStack(b, 1, i), BlockType.SAPLING); 
+				b = GameRegistry.findBlock("terrafirmacraft", "log2"+i);
+				HardLibAPI.treeCounter.addLogType(b);
+			}
+		}
+		
+		//TODO: TFC dirts
+		//for(int i = 1; i <= 1; i++) {
+		//	b = GameRegistry.findBlock("terrafirmacraft", "dirt");
+		//	HardLibAPI.treeCounter.addDirtType(b);
+		//}
 	}
 }
