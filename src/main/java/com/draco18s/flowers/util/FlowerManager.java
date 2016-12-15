@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.draco18s.flowers.OreFlowersBase;
 import com.draco18s.hardlib.api.interfaces.IHardOres;
 import com.draco18s.hardlib.api.interfaces.IHardRecipes;
 import com.draco18s.hardlib.api.internal.BlockWrapper;
@@ -27,6 +28,11 @@ public class FlowerManager implements IHardOres {
 
 	@Override
 	public Map<BlockWrapper, OreFlowerData> getOreList() {
+		if (oreList.size() == 0) {
+			OreFlowersBase.logger.info("Processing ore list for flowers...");
+			OreFlowersBase.instance.processOreDict();
+			OreFlowersBase.logger.info("...done.");
+		}
 		return oreList;
 	}
 

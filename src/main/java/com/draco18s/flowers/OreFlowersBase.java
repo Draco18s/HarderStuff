@@ -44,6 +44,7 @@ public class OreFlowersBase {
 
 	public static Configuration config;
 
+	public static boolean configProcessOreDictLatest = true;
 	public static int configScanDepth = 4;
 
 	@SidedProxy(clientSide="com.draco18s.flowers.client.ClientProxy", serverSide="com.draco18s.flowers.CommonProxy")
@@ -106,7 +107,13 @@ public class OreFlowersBase {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-    
+
+		configProcessOreDictLatest = config.getBoolean("processOreDictLatest", "GENERAL", configProcessOreDictLatest,
+				"Process the OreDictionary list as late as possible?\n" +
+				"When enabled, the blocks lists of flowers to match against are scanned in the OreDictionary as\n" +
+				"late as possible - specifically, when the world is first loaded. This ensures maximum compatibility\n" +
+				"with mods/modpacks that do some fancy worldgen or oredict changes, e.g. UBC and MineTweaker.\n"
+		);
 		configScanDepth = config.getInt("scanDepthSlices", "GENERAL", configScanDepth, 0, 32,
 				"Specify bonemeal scan depth in 8-block slices\n" +
 				"When using bonemeal on grass, the chunk is scanned this many 8-block slices down to determine\n" +
@@ -115,6 +122,16 @@ public class OreFlowersBase {
 				"flower to appear. This means that higher scan ranges could dilute the indicator results for\n" +
 				"chunks that have significant ore diversity.\n"
 		);
+
+		if (!configProcessOreDictLatest)
+			processOreDict();
+		
+		config.save();
+
+		proxy.registerEventHandlers();
+	}
+	
+	public void processOreDict() {
 		config.getInt("OreExists...", "ORES", 1, 0, 2, "These settings should be auto-detected during worldgen and act as an override.\n0 will prevent flowers, 2 will enforce (set automatically), 1 is default.");
 		
 		ArrayList<ItemStack> oreDictReq;
@@ -285,8 +302,6 @@ public class OreFlowersBase {
 			}
 		}
 		config.save();
-
-		proxy.registerEventHandlers();
 	}
 	
 	public void addArbitraryOre(Block ore) {
