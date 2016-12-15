@@ -26,10 +26,11 @@ public class OresEventHandler {
 			Map<BlockWrapper,OreFlowerData> list = HardLibAPI.oreManager.getOreList();
 			OreFlowerData entry;
 			for(BlockWrapper b : list.keySet()) {
-				int count = OreDataHooks.getOreData(event.world, event.x, event.y, event.z, b)+
-						OreDataHooks.getOreData(event.world, event.x, event.y-8, event.z, b)+
-						OreDataHooks.getOreData(event.world, event.x, event.y-16, event.z, b)+
-						OreDataHooks.getOreData(event.world, event.x, event.y-24, event.z, b);
+				int count = 0;
+				for (int scanLevel = 0; scanLevel < OreFlowersBase.configScanDepth; scanLevel++) {
+					int scanY = event.y - (scanLevel * 8);
+					count += OreDataHooks.getOreData(event.world, event.x, scanY, event.z, b);
+				}
 				//System.out.println(b.block.getUnlocalizedName() + ": " + count);
 				if(count > 0) {
 					count = (int)Math.min(Math.round(Math.log(count)), 10);

@@ -44,6 +44,8 @@ public class OreFlowersBase {
 
 	public static Configuration config;
 
+	public static int configScanDepth = 4;
+
 	@SidedProxy(clientSide="com.draco18s.flowers.client.ClientProxy", serverSide="com.draco18s.flowers.CommonProxy")
 	public static CommonProxy proxy;
 	public static Random rand = new Random();
@@ -104,6 +106,15 @@ public class OreFlowersBase {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+    
+		configScanDepth = config.getInt("scanDepthSlices", "GENERAL", configScanDepth, 0, 32,
+				"Specify bonemeal scan depth in 8-block slices\n" +
+				"When using bonemeal on grass, the chunk is scanned this many 8-block slices down to determine\n" +
+				"the ore yield. The default of " + configScanDepth + " for example will scan " + (configScanDepth * 8) + " blocks down. Note that ores in slices\n" +
+				"which are closer to the surface will have a greater weight on the chances for their associated\n"+
+				"flower to appear. This means that higher scan ranges could dilute the indicator results for\n" +
+				"chunks that have significant ore diversity.\n"
+		);
 		config.getInt("OreExists...", "ORES", 1, 0, 2, "These settings should be auto-detected during worldgen and act as an override.\n0 will prevent flowers, 2 will enforce (set automatically), 1 is default.");
 		
 		ArrayList<ItemStack> oreDictReq;
