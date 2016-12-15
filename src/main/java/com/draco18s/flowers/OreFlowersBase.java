@@ -47,6 +47,8 @@ public class OreFlowersBase {
 	public static Configuration config;
 
 	public static boolean configProcessOreDictLatest = true;
+	public static boolean configNoPersistentData = true;
+	public static boolean configDisableBonemeal = false;
 	public static int configScanDepth = 4;
 	public static HashSet<String> configExclusionsBlockIds;
 	public static HashSet<String> configExclusionsOredictTags;
@@ -118,6 +120,16 @@ public class OreFlowersBase {
 				"late as possible - specifically, when the world is first loaded. This ensures maximum compatibility\n" +
 				"with mods/modpacks that do some fancy worldgen or oredict changes, e.g. UBC and MineTweaker.\n"
 		);
+		
+		configNoPersistentData = config.getBoolean("noPersistentData", "GENERAL", configNoPersistentData,
+				"Prevent using persistent data for ore flowers and chunk distribution?\n" +
+				"If true, chunks will be rescanned for ore distribution every time bonemeal-on-grass is\n" +
+				"performed, and ore data will not be saved with the world. This will add a little bit of server work\n" +
+				"and network traffic compared to old behavior, however it ensures 100% accuracy and compatibility with\n" +
+				"other mods that modify worldgen, as well as changes in the world composition by players. It will also\n" +
+				"reduce world save work."
+		);
+		
 		configScanDepth = config.getInt("scanDepthSlices", "GENERAL", configScanDepth, 0, 32,
 				"Specify bonemeal scan depth in 8-block slices\n" +
 				"When using bonemeal on grass, the chunk is scanned this many 8-block slices down to determine\n" +
@@ -127,6 +139,12 @@ public class OreFlowersBase {
 				"chunks that have significant ore diversity.\n"
 		);
 		
+		configDisableBonemeal = config.getBoolean("disableBonemeal", "GENERAL", configDisableBonemeal,
+				"Disable bonemeal flowering completely?\n" +
+				"If enabled, bonemeal events will no longer spawn ore flowers at all - only flowers on worldgen will be generated\n" +
+				"and that's it - no more flowers ever! If you enable this, noPersistentData will be enabled too - regardless of what.\n" +
+				"you set it to. Some mods require this, for example UBC (it's overlay ore system causes all kinds of chaos).\n"
+		);
 		String[] exclusionsBlockIds = config.getStringList("ExcludeBlockIds", "EXCLUSIONS", new String[0], 
 				"Exclude block ID's from being matched by Ore Flowers\n" +
 				"Use the format modid:blockid[:meta] and put each on a separate line.\n" + 

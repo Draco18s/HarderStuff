@@ -22,7 +22,16 @@ public class OresEventHandler {
 
 	@SubscribeEvent
 	public void bonemeal(BonemealEvent event) {
+		if (OreFlowersBase.configDisableBonemeal)
+			return;
 		if(!event.world.isRemote && event.block == Blocks.grass && (event.entityPlayer != null || poopBonemealFlowers)) {
+			if (!(event.world.provider.dimensionId == Integer.MIN_VALUE) && (OreFlowersBase.configNoPersistentData)) {
+				// persistent data is disabled, so we (re)build the chunk data on-demand
+				Chunk c = event.world.getChunkFromBlockCoords(event.x, event.z);
+				int cx = c.xPosition;
+				int cz = c.zPosition;
+				OreFlowersBase.oreCounter.generate(null, cx, cz, event.world, false);
+			}
 			Map<BlockWrapper,OreFlowerData> list = HardLibAPI.oreManager.getOreList();
 			OreFlowerData entry;
 			for(BlockWrapper b : list.keySet()) {
@@ -54,18 +63,18 @@ public class OresEventHandler {
 		Chunk c = event.world.getChunkFromBlockCoords(event.worldX, event.worldZ);
 		int cx = c.xPosition;
 		int cz = c.zPosition;
-		OreFlowersBase.oreCounter.generate(null, cx, cz, event.world);
+		OreFlowersBase.oreCounter.generate(null, cx, cz, event.world, true);
 	}
 	
 	@SubscribeEvent
-	public void chunkLoad(ChunkDataEvent.Load event) {
-		if(!event.world.isRemote)
+	public void chunkLoad(ChunkDataEvent.Load event) { 
+		if ((!event.world.isRemote) && (!OreFlowersBase.configNoPersistentData) && (!OreFlowersBase.configDisableBonemeal))
 			OreDataHooks.readData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
 	}
 	
 	@SubscribeEvent
 	public void chunkSave(ChunkDataEvent.Save event) {
-		if(!event.world.isRemote)
+		if ((!event.world.isRemote) && (!OreFlowersBase.configNoPersistentData) && (!OreFlowersBase.configDisableBonemeal))
 			OreDataHooks.saveData(event.world, event.getChunk().xPosition, event.getChunk().zPosition, event.getData());
 	}
 	
