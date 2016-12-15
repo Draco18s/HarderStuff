@@ -50,6 +50,9 @@ public class OreFlowersBase {
 	public static boolean configNoPersistentData = true;
 	public static boolean configDisableBonemeal = false;
 	public static int configScanDepth = 4;
+	public static int configWorldgenFlowerRadius = 16;
+	public static int configWorldgenFlowerCount = 6;
+	public static int configWorldgenFlowerSpread = 9;
 	public static HashSet<String> configExclusionsBlockIds;
 	public static HashSet<String> configExclusionsOredictTags;
 
@@ -145,6 +148,26 @@ public class OreFlowersBase {
 				"and that's it - no more flowers ever! If you enable this, noPersistentData will be enabled too - regardless of what.\n" +
 				"you set it to. Some mods require this, for example UBC (it's overlay ore system causes all kinds of chaos).\n"
 		);
+		
+		configWorldgenFlowerRadius = config.getInt("worldgenFlowerRadius", "GENERAL", configWorldgenFlowerRadius, 1, 64,
+				"Range in radius of flower placment clusters on worldgen\n" +
+				"Specify the maximum range of worldgen flower placement from a detected vein/deposit. When using\n" +
+				"custom oregen and disabling bonemeal flowering, decreasing this is useful. Note however that the\n" +
+				"maximum level of indicator accuracy can never be better than 'this chunk'.\n"
+		);
+		
+		configWorldgenFlowerCount = config.getInt("worldgenFlowerCount", "GENERAL", configWorldgenFlowerCount, 1, 256,
+				"Count of flowers per worldgen patch\n" +
+				"Specify the maximum number of flowers per flower patch on worldgen. This should be no higher than the\n" +
+				"worldgenFlowerSpread (below) squared.\n"
+		);
+		
+		configWorldgenFlowerSpread = config.getInt("worldgenFlowerSpread", "GENERAL", configWorldgenFlowerSpread, 1, 64,
+				"Spread of flowers per worldgen cluster\n" +
+				"Specify how spread-out each cluster of flowers are in worldgen, i.e. the maximum size of the flower\n" +
+				"patch in block radius.\n"
+		);
+		
 		String[] exclusionsBlockIds = config.getStringList("ExcludeBlockIds", "EXCLUSIONS", new String[0], 
 				"Exclude block ID's from being matched by Ore Flowers\n" +
 				"Use the format modid:blockid[:meta] and put each on a separate line.\n" + 

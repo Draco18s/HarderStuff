@@ -90,7 +90,7 @@ public class OreCountGenerator {
 	        }
 			for(int b=0; b < blockList.size(); ++b) {
 				OreCounter c = blockList.get(b);
-				//System.out.println(c.b.getUnlocalizedName() + ": " + c.countA);
+				//System.out.println(c.b.block.getUnlocalizedName() + ": " + c.countA);
 				OreDataHooks.putOreData(world, chunkX, ext.getYLocation(), chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
 				c.cycleCounts();
 			}
@@ -128,7 +128,7 @@ public class OreCountGenerator {
 	        }
 			for(int b=0; b < blockList.size(); ++b) {
 				OreCounter c = blockList.get(b);
-				//System.out.println(c.b.getUnlocalizedName() + ": " + c.countA);
+				//System.out.println(c.b.block.getUnlocalizedName() + ": " + c.countA);
 				OreDataHooks.putOreData(world, chunkX, ext.getYLocation()+8, chunkZ, c.b, (int)(c.countA*(2f/3f) + c.countB*(1f/3f))/* + c.countC/6*/);
 
 				if(c.countA > 0) {
@@ -140,7 +140,7 @@ public class OreCountGenerator {
 						if(rand.nextInt(100) < ct) {
 							for(int j=1; lastY+j < 250; j++) {
 								if(world.getSavedLightValue(EnumSkyBlock.Sky, chunkX*16 + 8, lastY+j+1, chunkZ*16 + 8) > 7) {
-									OreFlowersBase.scatterFlowers(world, chunkX*16 + 8, lastY+j+1, chunkZ*16 + 8, dat.flower, dat.metadata, 16, 6, 9);
+									OreFlowersBase.scatterFlowers(world, chunkX*16 + 8, lastY+j+1, chunkZ*16 + 8, dat.flower, dat.metadata, OreFlowersBase.configWorldgenFlowerRadius, OreFlowersBase.configWorldgenFlowerCount, OreFlowersBase.configWorldgenFlowerSpread);
 									//return;
 									j = 999;
 								}
