@@ -137,8 +137,8 @@ public class OreCountGenerator {
 					if(ct > 0) { ct += 5; }
 					if(rand.nextInt(100) < ct) {
 						for(int j=1; lastY+j < 250; j++) {
-							if(world.getSavedLightValue(EnumSkyBlock.Sky, chunkX*16, lastY+j+1, chunkZ*16) > 7) {
-								OreFlowersBase.scatterFlowers(world, chunkX*16, lastY+j+1, chunkZ*16, dat.flower, dat.metadata, 16, 6, 9);
+							if(world.getSavedLightValue(EnumSkyBlock.Sky, chunkX*16 + 8, lastY+j+1, chunkZ*16 + 8) > 7) {
+								OreFlowersBase.scatterFlowers(world, chunkX*16 + 8, lastY+j+1, chunkZ*16 + 8, dat.flower, dat.metadata, 16, 6, 9);
 								//return;
 								j = 999;
 							}
