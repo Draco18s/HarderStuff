@@ -1,6 +1,8 @@
 package com.draco18s.flowers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -46,6 +48,8 @@ public class OreFlowersBase {
 
 	public static boolean configProcessOreDictLatest = true;
 	public static int configScanDepth = 4;
+	public static HashSet<String> configExclusionsBlockIds;
+	public static HashSet<String> configExclusionsOredictTags;
 
 	@SidedProxy(clientSide="com.draco18s.flowers.client.ClientProxy", serverSide="com.draco18s.flowers.CommonProxy")
 	public static CommonProxy proxy;
@@ -122,7 +126,22 @@ public class OreFlowersBase {
 				"flower to appear. This means that higher scan ranges could dilute the indicator results for\n" +
 				"chunks that have significant ore diversity.\n"
 		);
-
+		
+		String[] exclusionsBlockIds = config.getStringList("ExcludeBlockIds", "EXCLUSIONS", new String[0], 
+				"Exclude block ID's from being matched by Ore Flowers\n" +
+				"Use the format modid:blockid[:meta] and put each on a separate line.\n" + 
+				"Meta is optional - omit the second : completely to exclude all subblocks of that particular ID\n" + 
+				"Example:\n    TConstruct:GravelOre\n    TConstruct:SearedBrick:5\n");
+		configExclusionsBlockIds = new HashSet<String>(Arrays.asList(exclusionsBlockIds)); 
+		String[] exclusionsOredictTags = config.getStringList("ExclusionsOredictTags", "EXCLUSIONS", new String[0],
+				"Exclude OreDict tags from being matched by Ore Flowers.\n" +
+				"Put each oredict tag on a separate line.\n" +
+				"Example:\n    oreIron\n    oreCopper\n");
+		configExclusionsOredictTags = new HashSet<String>(Arrays.asList(exclusionsOredictTags));
+		
+		if (configExclusionsBlockIds.size() > 0 || configExclusionsOredictTags.size() > 0)
+			FlowerManager.setShouldFilter(true);
+		
 		if (!configProcessOreDictLatest)
 			processOreDict();
 		
