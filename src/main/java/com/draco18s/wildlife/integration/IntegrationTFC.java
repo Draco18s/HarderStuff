@@ -1,6 +1,8 @@
 package com.draco18s.wildlife.integration; 
 
 
+import org.apache.logging.log4j.Level;
+
 import com.draco18s.hardlib.api.HardLibAPI; 
 import com.draco18s.hardlib.api.interfaces.IAutoPlanter.BlockType; 
 import com.draco18s.wildlife.WildlifeBase; 
@@ -16,32 +18,39 @@ import net.minecraft.item.ItemStack;
 public class IntegrationTFC { 
 
 	public static void registerTFCTrees() {
-		Block b = GameRegistry.findBlock("terrafirmacraft", "sapling"); 
+		Block sapling = GameRegistry.findBlock("terrafirmacraft", "sapling"); 
+		Block b = null;
+		if(sapling != null) {
 
-		if(b != null) {
-
-			for(int i = 1; i <= 16; i++) {
-				HardLibAPI.plantManager.registerBlockType(new ItemStack(b, 1, i), BlockType.SAPLING); 
-				b = GameRegistry.findBlock("terrafirmacraft", "log"+i); 
-				HardLibAPI.treeCounter.addLogType(b);
-				//WildlifeBase.treeCounter.addLogType(b); 
+			for(int i = 0; i <= 16; i++) {
+				WildlifeBase.logger.log(Level.INFO, "Registering terrafirmacraft:log"+i);
+				HardLibAPI.plantManager.registerBlockType(new ItemStack(sapling, 1, i), BlockType.SAPLING);
 			}
 		}
-		b = GameRegistry.findBlock("terrafirmacraft", "sapling2"); 
-
-		if(b != null) { 
-
-			for(int i = 1; i <= 1; i++) {
-				HardLibAPI.plantManager.registerBlockType(new ItemStack(b, 1, i), BlockType.SAPLING); 
-				b = GameRegistry.findBlock("terrafirmacraft", "log2"+i);
-				HardLibAPI.treeCounter.addLogType(b);
-			}
-		}
+		b = GameRegistry.findBlock("terrafirmacraft", "log");
+		HardLibAPI.treeCounter.addLogType(b);
 		
-		//TODO: TFC dirts
-		//for(int i = 1; i <= 1; i++) {
-		//	b = GameRegistry.findBlock("terrafirmacraft", "dirt");
-		//	HardLibAPI.treeCounter.addDirtType(b);
-		//}
+		sapling = GameRegistry.findBlock("terrafirmacraft", "sapling2"); 
+
+		if(sapling != null) {
+			for(int i = 0; i <= 1; i++) {
+				WildlifeBase.logger.log(Level.INFO, "Registering terrafirmacraft:log2"+i);
+				HardLibAPI.plantManager.registerBlockType(new ItemStack(sapling, 1, i), BlockType.SAPLING);
+			}
+		}
+		b = GameRegistry.findBlock("terrafirmacraft", "log2");
+		HardLibAPI.treeCounter.addLogType(b);
+		
+
+		b = GameRegistry.findBlock("terrafirmacraft", "Grass");
+		HardLibAPI.treeCounter.addDirtType(b);
+		b = GameRegistry.findBlock("terrafirmacraft", "DryGrass");
+		HardLibAPI.treeCounter.addDirtType(b);
+		b = GameRegistry.findBlock("terrafirmacraft", "PeatGrass");
+		HardLibAPI.treeCounter.addDirtType(b);
+		b = GameRegistry.findBlock("terrafirmacraft", "ClayGrass");
+		HardLibAPI.treeCounter.addDirtType(b);
+		b = GameRegistry.findBlock("terrafirmacraft", "Dirt");
+		HardLibAPI.treeCounter.addDirtType(b);
 	}
 }

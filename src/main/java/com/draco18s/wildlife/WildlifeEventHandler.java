@@ -705,7 +705,7 @@ public class WildlifeEventHandler {
 									for(int ox = -5; ox <= 5&&!placed; ox++) {
 										for(int oz = -5; oz <= 5&&!placed; oz++) {
 											if(world.getBlock(x+ox, y+oy, z+oz) == Blocks.grass) {
-												world.setBlock(x+ox, y+oy+1, z+oz, id, item.getItemDamage()|8, 3);
+												world.setBlock(x+ox, y+oy+1, z+oz, id, item.getItemDamage(), 3);
 												if(trackTrees)
 													TreeDataHooks.addTree(world, x+ox, y+oy+1, z+oz, rand.nextInt(3000));
 												placed = true;
@@ -715,7 +715,7 @@ public class WildlifeEventHandler {
 								}
 							}
 							else { //standard trees
-								world.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
+								world.setBlock(x, y, z, id, item.getItemDamage(), 3);
 								if(trackTrees)
 									TreeDataHooks.addTree(world, x, y, z, rand.nextInt(3000));
 							}
@@ -724,7 +724,7 @@ public class WildlifeEventHandler {
 					//jungle floor is messy
 					else if(item.getItem() == Item.getItemFromBlock(Blocks.sapling) && item.getItemDamage() == 3) {
 						if(world.getBlock(x, y-1, z) == Blocks.leaves && world.getBlock(x, y-2, z) == Blocks.grass) {
-							world.setBlock(x, y-1, z, id, item.getItemDamage()|8, 3);
+							world.setBlock(x, y-1, z, id, item.getItemDamage(), 3);
 							if(trackTrees)
 								TreeDataHooks.addTree(world, x, y-1, z, rand.nextInt(3000));
 						}
@@ -821,28 +821,28 @@ public class WildlifeEventHandler {
 					area = canMake2x2(ent.worldObj, id, x, y, z);
 					switch(area) {
 					case 1:
-						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x+1, y, z+1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x+1, y, z+1, id, item.getItemDamage(), 3);
 						break;
 					case 2:
-						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x+1, y, z-1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x+1, y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x+1, y, z-1, id, item.getItemDamage(), 3);
 						break;
 					case 3:
-						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x-1, y, z-1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x,   y, z-1, id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x-1, y, z-1, id, item.getItemDamage(), 3);
 						break;
 					case 4:
-						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage()|8, 3);
-						ent.worldObj.setBlock(x-1, y, z+1, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x,   y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x-1, y, z,   id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x,   y, z+1, id, item.getItemDamage(), 3);
+						ent.worldObj.setBlock(x-1, y, z+1, id, item.getItemDamage(), 3);
 						break;
 					}
 					if(trackTrees) {
@@ -872,7 +872,7 @@ public class WildlifeEventHandler {
 					}
 					if(!placed) {
 						//System.out.println("Nothing near " + x + "," + y + "," + z);
-						ent.worldObj.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
+						ent.worldObj.setBlock(x, y, z, id, item.getItemDamage(), 3);
 						if(trackTrees)
 							TreeDataHooks.addTree(ent.worldObj, x, y, z, rand.nextInt(3000));
 					}
@@ -892,7 +892,7 @@ public class WildlifeEventHandler {
 					}										
 				}
 				if(!placed) {
-					ent.worldObj.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
+					ent.worldObj.setBlock(x, y, z, id, item.getItemDamage(), 3);
 					if(trackTrees)
 						TreeDataHooks.addTree(ent.worldObj, x, y, z, rand.nextInt(3000));
 				}
@@ -900,7 +900,7 @@ public class WildlifeEventHandler {
 		}
 		else if(item.getItemDamage() != 5) {
 			//System.out.println("No 2x2 available");
-			ent.worldObj.setBlock(x, y, z, id, item.getItemDamage()|8, 3);
+			ent.worldObj.setBlock(x, y, z, id, item.getItemDamage(), 3);
 			if(trackTrees)
 				TreeDataHooks.addTree(ent.worldObj, x, y, z, rand.nextInt(3000));
 		}

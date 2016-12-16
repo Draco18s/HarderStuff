@@ -334,6 +334,15 @@ public class OresEventHandler {
 		}
 	}
 	
+	@SubscribeEvent
+	public void worldTickEnd(TickEvent.WorldTickEvent event) {
+		if(event.phase == TickEvent.Phase.END) {
+			if(event.world.getWorldTime() % 2 == 0) {
+				OreDataHooks.doRescan(event.world);
+			}
+		}
+	}
+	
 	/*private int originalGraphsSize = -1;
 	private int removedGraphsSize = -1;
 	@SubscribeEvent

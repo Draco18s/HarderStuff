@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -40,7 +42,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class OreDataHooks {
 	private static final int VERSION = 2;
-	//private static LoadingCache<ChunkCoordTriplet, HashMap<String,Integer>> graphs;
+	private static Queue<ChunkCoordTriplet> toRescan = new ConcurrentLinkedQueue<ChunkCoordTriplet>();
 	//private static File dir;
 	//private static RemovalListener<ChunkCoordTriplet, HashMap<String,Integer>> removalListener;
 	private static ConcurrentHashMap<ChunkCoordTriplet, HashMap<String,Integer>> graphs = new ConcurrentHashMap<ChunkCoordTriplet, HashMap<String,Integer>>();
@@ -132,6 +134,7 @@ public class OreDataHooks {
     public static void readData(World world, int x, int z, NBTTagCompound nbt) {
     	if(nbt.hasKey("HardOreData")) {
     		NBTTagCompound honbt = nbt.getCompoundTag("HardOreData");
+        	boolean foundAnySlices = false;
     		for(int y=0; y < 256; y+=8) {
 	    		if(honbt.hasKey("slice_"+y)) {
 		    		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
@@ -149,19 +152,30 @@ public class OreDataHooks {
     					}
     				}
     				graphs.put(key, value);
+    				foundAnySlices = true;
     				//chunkList.put(key, true);
     			}
+    		}
+    		if(!foundAnySlices) {
+    			ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,0,z);
+    			//OresBase.logger.log(Level.INFO, "Chunk " + key + " is missing ore data, it will be rescanned.  Chunks way out on the edge of the world may not save and cause this message to repeat next launch; do not be alarmed.");
+        		//OresBase.oreCounter.generate(null, x, z, world);
+    			if(!toRescan.contains(key))
+    				toRescan.add(key);
     		}
     	}
     	else {
     		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,0,z);
-			OresBase.logger.log(Level.INFO, "Chunk " + key + " is missing ore data, it will be rescanned.  Chunks way out on the edge of the world may not save and cause this message to repeat next launch; do not be alarmed.");
-    		OresBase.oreCounter.generate(null, x, z, world);
+			//OresBase.logger.log(Level.INFO, "Chunk " + key + " is missing ore data, it will be rescanned.  Chunks way out on the edge of the world may not save and cause this message to repeat next launch; do not be alarmed.");
+    		//OresBase.oreCounter.generate(null, x, z, world);
+			if(!toRescan.contains(key))
+				toRescan.add(key);
     	}
     }
     
     public static void saveData(World world, int x, int z, NBTTagCompound nbt) {
     	NBTTagCompound honbt = new NBTTagCompound();
+    	boolean foundAnySlices = false;
     	for(int y=0; y < 256; y+=8) {
 	    	ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,y,z);
 	    	HashMap<String,Integer> value = graphs.get(key);
@@ -174,6 +188,7 @@ public class OreDataHooks {
 			    	++i;
 		    	}
 		    	honbt.setTag("slice_"+y, snbt);
+		    	foundAnySlices = true;
 	    	}
 			/*if(!WorldUtils.isChunkLoaded_noChunkLoading(world, x, z)) {
 				//chunkList.remove(key);
@@ -182,7 +197,8 @@ public class OreDataHooks {
 			}*/
     	}
     	honbt.setInteger("version", VERSION);
-    	nbt.setTag("HardOreData", honbt);
+    	if(foundAnySlices)
+    		nbt.setTag("HardOreData", honbt);
     }
     
     public static void clearData(World world, int x, int z) {
@@ -225,6 +241,16 @@ public class OreDataHooks {
 			graphs.remove(cct);
 		}
 		return toClear.size();
+	}
+	
+	public static void doRescan(World world) {
+		ChunkCoordTriplet key = toRescan.peek();
+		if(key != null && key.dimID == world.provider.dimensionId) {
+			key = toRescan.poll();
+			OresBase.logger.log(Level.INFO, "Chunk " + key + " is missing ore data, it will be rescanned.  Chunks way out on the edge of the world may not save and cause this message to repeat next launch; do not be alarmed.");
+			OresBase.logger.log(Level.INFO, toRescan.size() + " chunks remain.");
+    		OresBase.oreCounter.generate(null, key.posX, key.posZ, world);
+		}
 	}
 	
 	public static int getGraphSize() {

@@ -28,12 +28,12 @@ public class BlockUtils implements IAutoPlanter {
 
 	@Override
 	public void registerBlockType(ItemStack stack, BlockType value) {
-		ItemWrapper key = new ItemWrapper(stack.getItem(), stack.getItemDamage());
-		if(key.item == null) {
+		if(stack.getItem() == null) {
 			RuntimeException e = new RuntimeException("Attempted to define a null block as " + value.name());
 			e.printStackTrace();
 			return;
 		}
+		ItemWrapper key = new ItemWrapper(stack.getItem(), stack.getItemDamage());
 		plantables.put(key, value);
 	}
 }

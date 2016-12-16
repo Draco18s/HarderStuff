@@ -35,10 +35,20 @@ public class TreeCountGenerator implements ITreeTracker {
 	}
 	
 	public void addLogType(Block b) {
+		if(b == null) {
+			RuntimeException e = new RuntimeException("Attempted to define a null block as logs");
+			e.printStackTrace();
+			return;
+		}
 		logBlockList.add(b);
 	}
 	
 	public void addDirtType(Block b) {
+		if(b == null) {
+			RuntimeException e = new RuntimeException("Attempted to define a null block as dirt");
+			e.printStackTrace();
+			return;
+		}
 		dirtBlockList.add(b);
 	}
 
