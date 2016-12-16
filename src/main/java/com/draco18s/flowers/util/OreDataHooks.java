@@ -97,7 +97,7 @@ public class OreDataHooks {
 			}
 		}
 		if(flag) {
-			OreFlowersBase.oreCounter.generate(null, x, z, world);
+			OreFlowersBase.oreCounter.generate(null, x, z, world, false);
 			map.put("fake_ore_count", 1);
 		}
 		map = graphs.get(key);
@@ -153,7 +153,7 @@ public class OreDataHooks {
     	else {
     		ChunkCoordTriplet key = new ChunkCoordTriplet(world.provider.dimensionId, x,0,z);
 			OreFlowersBase.logger.log(Level.INFO, "Chunk " + key + " is missing ore data, it will be rescanned.  Chunks way out on the edge of the world may not save and cause this message to repeat next launch; do not be alarmed.");
-    		OreFlowersBase.oreCounter.generate(null, x, z, world);
+    		OreFlowersBase.oreCounter.generate(null, x, z, world, false);
     	}
     }
     

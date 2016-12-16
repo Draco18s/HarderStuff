@@ -1,6 +1,8 @@
 package com.draco18s.flowers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -43,6 +45,16 @@ public class OreFlowersBase {
 	public static OreFlowersBase instance;
 
 	public static Configuration config;
+
+	public static boolean configProcessOreDictLatest = true;
+	public static boolean configNoPersistentData = true;
+	public static boolean configDisableBonemeal = false;
+	public static int configScanDepth = 4;
+	public static int configWorldgenFlowerRadius = 16;
+	public static int configWorldgenFlowerCount = 6;
+	public static int configWorldgenFlowerSpread = 9;
+	public static HashSet<String> configExclusionsBlockIds;
+	public static HashSet<String> configExclusionsOredictTags;
 
 	@SidedProxy(clientSide="com.draco18s.flowers.client.ClientProxy", serverSide="com.draco18s.flowers.CommonProxy")
 	public static CommonProxy proxy;
@@ -104,6 +116,82 @@ public class OreFlowersBase {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+
+		configProcessOreDictLatest = config.getBoolean("processOreDictLatest", "GENERAL", configProcessOreDictLatest,
+				"Process the OreDictionary list as late as possible?\n" +
+				"When enabled, the blocks lists of flowers to match against are scanned in the OreDictionary as\n" +
+				"late as possible - specifically, when the world is first loaded. This ensures maximum compatibility\n" +
+				"with mods/modpacks that do some fancy worldgen or oredict changes, e.g. UBC and MineTweaker.\n"
+		);
+		
+		configNoPersistentData = config.getBoolean("noPersistentData", "GENERAL", configNoPersistentData,
+				"Prevent using persistent data for ore flowers and chunk distribution?\n" +
+				"If true, chunks will be rescanned for ore distribution every time bonemeal-on-grass is\n" +
+				"performed, and ore data will not be saved with the world. This will add a little bit of server work\n" +
+				"and network traffic compared to old behavior, however it ensures 100% accuracy and compatibility with\n" +
+				"other mods that modify worldgen, as well as changes in the world composition by players. It will also\n" +
+				"reduce world save work."
+		);
+		
+		configScanDepth = config.getInt("scanDepthSlices", "GENERAL", configScanDepth, 0, 32,
+				"Specify bonemeal scan depth in 8-block slices\n" +
+				"When using bonemeal on grass, the chunk is scanned this many 8-block slices down to determine\n" +
+				"the ore yield. The default of " + configScanDepth + " for example will scan " + (configScanDepth * 8) + " blocks down. Note that ores in slices\n" +
+				"which are closer to the surface will have a greater weight on the chances for their associated\n"+
+				"flower to appear. This means that higher scan ranges could dilute the indicator results for\n" +
+				"chunks that have significant ore diversity.\n"
+		);
+		
+		configDisableBonemeal = config.getBoolean("disableBonemeal", "GENERAL", configDisableBonemeal,
+				"Disable bonemeal flowering completely?\n" +
+				"If enabled, bonemeal events will no longer spawn ore flowers at all - only flowers on worldgen will be generated\n" +
+				"and that's it - no more flowers ever! If you enable this, noPersistentData will be enabled too - regardless of what.\n" +
+				"you set it to. Some mods require this, for example UBC (it's overlay ore system causes all kinds of chaos).\n"
+		);
+		
+		configWorldgenFlowerRadius = config.getInt("worldgenFlowerRadius", "GENERAL", configWorldgenFlowerRadius, 1, 64,
+				"Range in radius of flower placment clusters on worldgen\n" +
+				"Specify the maximum range of worldgen flower placement from a detected vein/deposit. When using\n" +
+				"custom oregen and disabling bonemeal flowering, decreasing this is useful. Note however that the\n" +
+				"maximum level of indicator accuracy can never be better than 'this chunk'.\n"
+		);
+		
+		configWorldgenFlowerCount = config.getInt("worldgenFlowerCount", "GENERAL", configWorldgenFlowerCount, 1, 256,
+				"Count of flowers per worldgen patch\n" +
+				"Specify the maximum number of flowers per flower patch on worldgen. This should be no higher than the\n" +
+				"worldgenFlowerSpread (below) squared.\n"
+		);
+		
+		configWorldgenFlowerSpread = config.getInt("worldgenFlowerSpread", "GENERAL", configWorldgenFlowerSpread, 1, 64,
+				"Spread of flowers per worldgen cluster\n" +
+				"Specify how spread-out each cluster of flowers are in worldgen, i.e. the maximum size of the flower\n" +
+				"patch in block radius.\n"
+		);
+		
+		String[] exclusionsBlockIds = config.getStringList("ExcludeBlockIds", "EXCLUSIONS", new String[0], 
+				"Exclude block ID's from being matched by Ore Flowers\n" +
+				"Use the format modid:blockid[:meta] and put each on a separate line.\n" + 
+				"Meta is optional - omit the second : completely to exclude all subblocks of that particular ID\n" + 
+				"Example:\n    TConstruct:GravelOre\n    TConstruct:SearedBrick:5\n");
+		configExclusionsBlockIds = new HashSet<String>(Arrays.asList(exclusionsBlockIds)); 
+		String[] exclusionsOredictTags = config.getStringList("ExclusionsOredictTags", "EXCLUSIONS", new String[0],
+				"Exclude OreDict tags from being matched by Ore Flowers.\n" +
+				"Put each oredict tag on a separate line.\n" +
+				"Example:\n    oreIron\n    oreCopper\n");
+		configExclusionsOredictTags = new HashSet<String>(Arrays.asList(exclusionsOredictTags));
+		
+		if (configExclusionsBlockIds.size() > 0 || configExclusionsOredictTags.size() > 0)
+			FlowerManager.setShouldFilter(true);
+		
+		if (!configProcessOreDictLatest)
+			processOreDict();
+		
+		config.save();
+
+		proxy.registerEventHandlers();
+	}
+	
+	public void processOreDict() {
 		config.getInt("OreExists...", "ORES", 1, 0, 2, "These settings should be auto-detected during worldgen and act as an override.\n0 will prevent flowers, 2 will enforce (set automatically), 1 is default.");
 		
 		ArrayList<ItemStack> oreDictReq;
@@ -274,8 +362,6 @@ public class OreFlowersBase {
 			}
 		}
 		config.save();
-
-		proxy.registerEventHandlers();
 	}
 	
 	public void addArbitraryOre(Block ore) {
