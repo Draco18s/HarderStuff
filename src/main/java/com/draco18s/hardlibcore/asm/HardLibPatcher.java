@@ -233,8 +233,11 @@ public class HardLibPatcher implements IClassTransformer {
 		InsnList patch = new InsnList();
 		
 		AbstractInsnNode absNode = findFirst(LDC, method.instructions);
-		LdcInsnNode ldc = (LdcInsnNode)absNode;
-		ldc.cst = moonPhaseTime;
+		Object cst = ((LdcInsnNode)absNode).cst;
+		if ((cst instanceof Long) && (Long) cst == 24000) {
+			AbstractInsnNode replacement = new FieldInsnNode(Opcodes.GETSTATIC, "com/draco18s/hardlibcore/asm/HardLibPatcher", "moonPhaseTime", "J");
+			method.instructions.set(absNode, replacement);
+		}
 	}
 	
 	private void patchEntityAnimal(ClassNode classNode) {
